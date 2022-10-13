@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts {
+public class Posts extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,10 @@ public class Posts {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private String author;
+    private Long author;
 
     @Builder
-    public Posts(String title, String content, String author) {
+    public Posts(String title, String content, Long author) {
         this.title = title;
         this.content = content;
         this.author = author;

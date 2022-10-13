@@ -31,7 +31,7 @@ class PostsServiceTest {
         Long id = postsService.save(PostsSaveRequestDto.builder()
             .title(title)
             .content(content)
-            .author("tester")
+            .author(11L)
             .build());
 
         //when
@@ -41,8 +41,6 @@ class PostsServiceTest {
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getContent()).isEqualTo(content);
         assertThat(post.getId().equals(id));
-
-
 
     }
 
