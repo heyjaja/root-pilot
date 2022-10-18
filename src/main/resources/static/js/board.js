@@ -1,10 +1,7 @@
 const saveBtn = document.getElementById('save-btn');
 const updateBtn = document.getElementById('update-btn');
 const deleteBtn = document.getElementById('delete-btn');
-const title = document.getElementById('title');
-const content = document.getElementById('content');
-const author = document.getElementById('author');
-const postId = document.getElementById('postId');
+const postId = document.getElementById('id-area');
 
 const post = {
     init : function() {
@@ -19,11 +16,7 @@ const post = {
             return;
         }
 
-        const data = {
-            title: title.value,
-            author: author.value,
-            content: content.value,
-        };
+        const data = getFormData("save-form");
 
         await fetch("/posts", {
             method: "POST",
@@ -41,10 +34,7 @@ const post = {
             return;
         }
 
-        const data = {
-            title: title.value,
-            content: content.value,
-        };
+        const data = getFormData('update-form');
 
         await fetch("/posts/"+postId.value, {
             method: "PATCH",
@@ -76,3 +66,15 @@ const post = {
 }
 
 post.init();
+
+
+
+function getFormData(formId) {
+    let form = document.getElementById(formId);
+    form = new FormData(form);
+    const formData = {};
+    form.forEach((value, key) => formData[key]=value);
+
+    return formData;
+
+}

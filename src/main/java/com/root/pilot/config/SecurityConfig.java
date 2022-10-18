@@ -3,38 +3,41 @@ package com.root.pilot.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity // 기본적인 웹 보안 설정
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+            .headers().frameOptions().sameOrigin()
+            .and()
             .csrf().disable()
-            .headers()
-                .frameOptions()
-                .sameOrigin()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-                .authorizeHttpRequests()
-                    .antMatchers("/", "/css/**", "/js/**", "/board").permitAll()
-            .and()
-                .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
-            .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/board");
+            .authorizeHttpRequests() // 접근제한 설정
+            .antMatchers("/board", "/css/**", "/js/**", "/board/**", "/posts/**").permitAll() // 인증없이 접근 허용
+            .anyRequest().authenticated();
 
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }
