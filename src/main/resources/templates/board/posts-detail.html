@@ -15,7 +15,7 @@
                     <span class="text-muted fs-sm"
                           th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
                 </div>
-                <div class="mb-1" id="onlyuser">
+                <article class="mb-1" id="onlyuser">
                     <form>
                         <input type="hidden" id="postId" th:value="${post.id}"/>
                     </form>
@@ -23,7 +23,7 @@
                        th:href="'/board/newpost/'+${post.id}">수정</a>
                     <span class="fs-sm"> | </span>
                     <span class="fs-sm" role="button" tabindex="0" id="delete-btn">삭제</span>
-                </div>
+                </article>
             </header>
             <hr>
             <div th:text="${post.content}">

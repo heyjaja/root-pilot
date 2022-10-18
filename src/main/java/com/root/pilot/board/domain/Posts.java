@@ -1,5 +1,6 @@
 package com.root.pilot.board.domain;
 
+import com.root.pilot.commons.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
