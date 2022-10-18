@@ -25,25 +25,42 @@ public class Users extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @JsonIgnore
     private String password;
 
-    @Column(nullable = false, length = 20, unique = true)
-    private String nickname;
+    private String picture;
+    private String name;
+
+    @Column(nullable = false)
+    private Boolean emailVerified = false;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider authProvider;
+
     @Builder
-    public Users(String email, String password, String nickname, Role role) {
+    public Users(String email, String password, String name, Role role, String picture, AuthProvider authProvider) {
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
+        this.name = name;
         this.role = role;
+        this.picture = picture;
+        this.authProvider = authProvider;
     }
 
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
+    public Users update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 
 

@@ -25,11 +25,4 @@ spring:
   thymeleaf:
     cache: false
 
-# Jwt 관련 설정
-jwt:
-  header: Authorization
-  #HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.
-  #echo 'springboot-pilot-project-root-jwt-secret-secret'|base64
-  secret: c3ByaW5nYm9vdC1waWxvdC1wcm9qZWN0LXJvb3Qtand0LXNlY3JldC1zZWNyZXQ=
-  token-validity-in-seconds: 86400 #24시간
 
