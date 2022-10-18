@@ -1,15 +1,13 @@
 package com.root.pilot.board.service;
 
 import com.root.pilot.board.domain.Posts;
-import com.root.pilot.board.domain.PostsRepository;
-import com.root.pilot.board.dto.PostsListResponseDto;
+import com.root.pilot.board.dto.PageRequestDto;
+import com.root.pilot.board.repository.PostsRepository;
 import com.root.pilot.board.dto.PostsListWithPageResponseDto;
 import com.root.pilot.board.dto.PostsResponseDto;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import com.root.pilot.board.dto.PostsUpdateRequestDto;
 import com.root.pilot.board.repository.PostsQueryRepository;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,23 +55,19 @@ public class PostsService {
         return new PostsResponseDto(entity);
     }
 
-    // 글목록
-    @Transactional(readOnly = true)
-    public List<PostsListResponseDto> findAllDesc() {
-        return postsRepository.findAllDesc().stream()
-            .map(PostsListResponseDto::new)
-            .collect(Collectors.toList());
-    }
-
     // 글목록 페이징
     @Transactional(readOnly = true)
-    public PostsListWithPageResponseDto getListWithPaging(Pageable pageable) {
+    public PostsListWithPageResponseDto getListWithPaging(PageRequestDto pageRequestDto) {
+
+        Pageable pageable = pageRequestDto.getPageable();
+
         Page<Posts> results = postsQueryRepository.getPostsList(pageable);
 
         return PostsListWithPageResponseDto.builder()
             .postsList(results.getContent())
             .totalCount(results.getTotalElements())
             .totalPages((long)results.getTotalPages())
+            .pageable(pageable)
             .build();
     }
 

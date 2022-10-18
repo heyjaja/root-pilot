@@ -1,4 +1,4 @@
-package com.root.pilot.board.domain;
+package com.root.pilot.commons;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

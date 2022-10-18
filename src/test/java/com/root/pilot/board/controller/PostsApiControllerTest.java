@@ -3,7 +3,7 @@ package com.root.pilot.board.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.root.pilot.board.domain.Posts;
-import com.root.pilot.board.domain.PostsRepository;
+import com.root.pilot.board.repository.PostsRepository;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import com.root.pilot.board.dto.PostsUpdateRequestDto;
 import java.util.List;
@@ -44,7 +44,7 @@ class PostsApiControllerTest {
                 .author(11L)
                 .build();
 
-        String url = "http://localhost:" + port + "/posts";
+        String url = "http://localhost:" + port + "/board";
 
         ResponseEntity<Long> responseEntity =
             restTemplate.postForEntity(url, requestDto, Long.class);
@@ -76,7 +76,7 @@ class PostsApiControllerTest {
             .content(updateContent)
             .build();
 
-        String url = "http://localhost:" + port + "/posts/"+updateId;
+        String url = "http://localhost:" + port + "/board/"+updateId;
 
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
@@ -102,7 +102,7 @@ class PostsApiControllerTest {
 
         Long deleteId = savedPosts.getId();
 
-        String url = "http://localhost:" + port + "/posts/"+deleteId;
+        String url = "http://localhost:" + port + "/board/"+deleteId;
 
         ResponseEntity<Long> responseEntity =
             restTemplate.exchange(url, HttpMethod.DELETE, null, Long.class);

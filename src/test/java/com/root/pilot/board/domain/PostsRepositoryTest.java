@@ -2,6 +2,7 @@ package com.root.pilot.board.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.root.pilot.board.repository.PostsRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

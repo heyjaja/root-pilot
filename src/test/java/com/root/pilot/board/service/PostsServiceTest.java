@@ -3,7 +3,7 @@ package com.root.pilot.board.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.root.pilot.board.domain.Posts;
-import com.root.pilot.board.domain.PostsRepository;
+import com.root.pilot.board.repository.PostsRepository;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import java.util.List;
 import org.junit.jupiter.api.Test;
