@@ -1,8 +1,11 @@
 package com.root.pilot.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.root.pilot.commons.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,16 +25,26 @@ public class Users extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 20, unique = true)
+    private String nickname;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String name;
+    private Role role;
 
     @Builder
-    public Users(String email, String password, String name) {
+    public Users(String email, String password, String nickname, Role role) {
         this.email = email;
         this.password = password;
-        this.name = name;
+        this.nickname = nickname;
+        this.role = role;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+
 }

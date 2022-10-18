@@ -9,18 +9,18 @@
         <h1>게시글 등록</h1>
         <hr>
         <section>
-            <form>
+            <form id="save-form">
                 <div class="form-group mb-2">
                     <label for="title">제목</label>
-                    <input type="text" class="form-control" id="title"/>
+                    <input type="text" class="form-control" name="title" id="title"/>
                 </div>
                 <div class="form-group mb-2">
                     <label for="author">작성자</label>
-                    <input type="text" class="form-control" id="author"/>
+                    <input type="text" class="form-control" name="author" id="author"/>
                 </div>
                 <div class="form-group mb-2">
                     <label for="content">내용</label>
-                    <textarea class="form-control" id="content"></textarea>
+                    <textarea class="form-control" name="content" id="content"></textarea>
                 </div>
             </form>
             <a href="/board" role="button" class="btn btn-secondary">취소</a>

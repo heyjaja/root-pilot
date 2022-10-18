@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BoardController {
     private final PostsService postsService;
 
-    @GetMapping("")
+    @GetMapping
     public String getList(Model model, PageRequestDto pageRequestDto) {
         model.addAttribute("posts", postsService.getListWithPaging(pageRequestDto));
 

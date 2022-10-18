@@ -8,25 +8,25 @@
     <main>
         <article>
             <header>
-                <h1 class="mb-2" th:text="${post.title}"></h1>
+                <h1 class="mb-2" th:text="${post.title}" id="title-area"></h1>
                 <div class="mb-1">
-                    <span class="text-muted fs-sm" th:text="${post.author}"></span>
+                    <span class="text-muted fs-sm" th:text="${post.author}" id="author-area"></span>
                     <span class="text-muted fs-sm"> | </span>
                     <span class="text-muted fs-sm"
-                          th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                          th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}" id="date-area"></span>
                 </div>
-                <article class="mb-1" id="onlyuser">
+                <article class="mb-1" id="only-user">
                     <form>
-                        <input type="hidden" id="postId" th:value="${post.id}"/>
+                        <input type="hidden" name="id" th:value="${post.id}" id="id-area"/>
                     </form>
                     <a class="text-dark text-decoration-none fs-sm"
-                       th:href="'/board/newpost/'+${post.id}">수정</a>
+                       th:href="'/board/newpost/'+${post.id}" id="update-post-link">수정</a>
                     <span class="fs-sm"> | </span>
                     <span class="fs-sm" role="button" tabindex="0" id="delete-btn">삭제</span>
                 </article>
             </header>
             <hr>
-            <div th:text="${post.content}">
+            <div th:text="${post.content}" id="contentArea">
             </div>
         </article>
     </main>
