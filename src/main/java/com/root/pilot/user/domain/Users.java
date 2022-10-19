@@ -63,5 +63,13 @@ public class Users extends BaseEntity {
         return this.role.getKey();
     }
 
+    public String getRoleForToString() {
+        return role.toString();
+    }
+
+    public String getAuthProviderForToString() {
+        return authProvider.toString();
+    }
+
 
 }
