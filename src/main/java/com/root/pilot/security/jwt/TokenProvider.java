@@ -1,4 +1,4 @@
-package com.root.pilot.commons.util;
+package com.root.pilot.security.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -6,41 +6,48 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Component
 public class TokenProvider {
 
-    private static String secretKey;
-    private static Long tokenValidityInSeconds;
+    static Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    private static Key key;
+    private final String secretKey = "c3ByaW5nYm9vdC1waWxvdC1wcm9qZWN0LXJvb3Qtand0LXNlY3JldC1zZWNyZXQ=";
+    private final Long tokenValidityInSeconds = 86400L;
 
-    public TokenProvider(@Value("${jwt.secret}") String secretKey,
-        @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds) {
+    private Key key;
 
-        this.secretKey = secretKey;
-        this.tokenValidityInSeconds = tokenValidityInSeconds;
+    @Autowired
+    public TokenProvider() {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
 
-    public static String createToken(Map<String, Object> claims){
+    public String createAccessToken(Map<String, Object> claims){
         Date now = new Date();
 
         return Jwts.builder()
             .setClaims(claims)
             .setIssuedAt(now)
+            .setSubject("access-token")
             .setExpiration(new Date(now.getTime() + (tokenValidityInSeconds * 1000)))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
 
     }
 
-    public static String createRefreshToken(Map<String, Object> claims) {
+    public String createRefreshToken(Map<String, Object> claims) {
+        Date now = new Date();
 
         return Jwts.builder()
             .setClaims(claims)
+            .setIssuedAt(now)
+            .setSubject("refresh-token")
+            .setExpiration(new Date(now.getTime() + (tokenValidityInSeconds * 1000 * 7)))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact();
     }
@@ -61,7 +68,7 @@ public class TokenProvider {
         }
     }
 
-    public static Map<String, Object> getClaims(String jwt) {
+    public Map<String, Object> getClaims(String jwt) {
 
         try {
             Claims claims = Jwts.parserBuilder().setSigningKey(key)
