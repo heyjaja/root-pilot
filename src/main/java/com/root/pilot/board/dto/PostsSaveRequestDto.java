@@ -1,6 +1,7 @@
 package com.root.pilot.board.dto;
 
 import com.root.pilot.board.domain.Posts;
+import com.root.pilot.user.domain.Users;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,20 +11,13 @@ import lombok.NoArgsConstructor;
 public class PostsSaveRequestDto {
     private String title;
     private String content;
-    private Long author;
+    private Long user;
 
     @Builder
-    public PostsSaveRequestDto(String title, String content, Long author) {
+    public PostsSaveRequestDto(String title, String content, Long user) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
     }
 
-    public Posts toEntity() {
-        return Posts.builder()
-            .title(title)
-            .content(content)
-            .author(author)
-            .build();
-    }
 }

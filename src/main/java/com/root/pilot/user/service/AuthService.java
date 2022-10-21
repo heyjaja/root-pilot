@@ -5,13 +5,13 @@ import com.root.pilot.security.jwt.TokenService;
 import com.root.pilot.security.service.CustomUserDetailsService;
 import com.root.pilot.user.domain.Users;
 import com.root.pilot.user.dto.LoginRequestDto;
+import com.root.pilot.user.dto.AuthResponseDto;
 import com.root.pilot.user.dto.SignUpRequestDto;
 import com.root.pilot.user.repository.UsersRepository;
 import javax.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class UsersService {
+public class AuthService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -41,7 +41,7 @@ public class UsersService {
     }
 
     @Transactional
-    public String signInUser(LoginRequestDto requestDto) {
+    public AuthResponseDto signInUser(LoginRequestDto requestDto) {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
@@ -50,9 +50,17 @@ public class UsersService {
 
         if(passwordEncoder.matches(password, user.getPassword())) {
 
-            String accessToken = tokenService.createAccessToken(user);
+            CustomUserDetails userDetails = customUserDetailsService.loadUserById(user.getId());
 
-            return accessToken;
+            UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null,
+                    userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            String accessToken = tokenService.createAccessToken(userDetails);
+
+            return new AuthResponseDto(accessToken);
         }
 
         throw new RuntimeException("비밀번호가 틀림");

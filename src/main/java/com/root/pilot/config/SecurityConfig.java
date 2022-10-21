@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @RequiredArgsConstructor
 @EnableWebSecurity // 기본적인 웹 보안 설정
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
@@ -26,18 +28,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .headers().frameOptions().sameOrigin()
-            .and()
             .csrf().disable()
-                .formLogin().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .formLogin().disable()
+            .logout().logoutUrl("/logout")
+                .logoutSuccessUrl("/board")
+                .deleteCookies("accessToken")
+            .and()
+            .httpBasic().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeHttpRequests() // 접근제한 설정
-            .antMatchers("/auth/**", "/board", "/css/**", "/js/**", "/board/**").permitAll() // 인증없이 접근 허용
-            .anyRequest().authenticated()
+                .antMatchers("/", "/**/*.js", "/**/*.css", "/error", "/favicon.ico")
+                .permitAll()
+                .antMatchers("/login", "/signup", "/auth/**", "/board/**","/oauth2/**")
+                .permitAll() // 인증없이 접근 허용
+                .anyRequest().authenticated()
             .and()
-            .oauth2Login().userInfoEndpoint()
-            .userService(customOAuth2UserService);
+            .oauth2Login()
+                .loginPage("/login")
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService);
 
 
         http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

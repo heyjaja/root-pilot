@@ -5,6 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.root.pilot.board.domain.Posts;
 import com.root.pilot.board.repository.PostsRepository;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
+import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.user.domain.AuthProvider;
+import com.root.pilot.user.domain.Role;
+import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.repository.UsersRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +27,9 @@ class PostsServiceTest {
     @Autowired
     PostsRepository postsRepository;
 
+    @Autowired
+    UsersRepository usersRepository;
+
     @Test
     public void TestSavePostsService() {
         //given
@@ -31,8 +39,8 @@ class PostsServiceTest {
         Long id = postsService.save(PostsSaveRequestDto.builder()
             .title(title)
             .content(content)
-            .author(11L)
-            .build());
+            .user(1L)
+            .build() , 1L);
 
         //when
         List<Posts> posts = postsRepository.findAll();

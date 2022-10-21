@@ -8,6 +8,10 @@ import com.root.pilot.board.dto.PostsResponseDto;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import com.root.pilot.board.dto.PostsUpdateRequestDto;
 import com.root.pilot.board.repository.PostsQueryRepository;
+import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.repository.UsersRepository;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +23,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostsService {
     private final PostsRepository postsRepository;
     private final PostsQueryRepository postsQueryRepository;
+    private final UsersRepository usersRepository;
 
     // 글쓰기
     @Transactional
-    public Long save(PostsSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getId();
+    public Long save(PostsSaveRequestDto requestDto, Long userId) {
+        Users user = usersRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("유저 정보가 존재하지 않습니다."));
+
+        Posts post = Posts.builder().title(requestDto.getTitle())
+            .content(requestDto.getContent())
+            .user(user)
+            .build();
+
+        return postsRepository.save(post).getId();
     }
 
     //글수정
