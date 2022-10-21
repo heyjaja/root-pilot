@@ -1,0 +1,56 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout}">
+
+<th:block layout:fragment="content">
+  <main class="m-auto" style="max-width:330px; padding:15px">
+      <div class="input-form col-md-12 mx-auto">
+        <h1 class="mb-3">회원가입</h1>
+        <form class="validation-form" id="signup-form" novalidate>
+
+          <div class="mb-3">
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control" id="floatingName" placeholder="name"
+                     name="name"  required>
+              <label for="floatingName">이름</label>
+              <div class="alert alert-warning collapse" role="alert" id="name-alert">
+                이름은 한글과 영문만 가능합니다.
+              </div>
+            </div>
+            <div class="form-floating mb-2">
+              <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com"
+                     name="email" required>
+              <label for="floatingEmail">Email</label>
+              <div class="alert alert-warning collapse" role="alert" id="email-alert">
+                올바른 이메일 형식이 아닙니다.
+              </div>
+            </div>
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                     name="password" required>
+              <label for="floatingPassword">Password</label>
+              <div class="alert alert-warning collapse" role="alert" id="password-alert">
+                비밀번호는 6자 이상 20자 이하만 가능합니다.
+              </div>
+            </div>
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control" id="floatingPassword2" placeholder="Password"
+                     name="password2" required>
+              <label for="floatingPassword2">Password 확인</label>
+              <div class="alert alert-warning collapse" role="alert" id="password2-alert">
+                비밀번호가 일치하지 않습니다.
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4"></div>
+          <button class="w-100 btn btn-primary btn-lg btn-block" type="button" id="signup-btn">가입 완료</button>
+        </form>
+      </div>
+  </main>
+
+</th:block>
+
+</html>

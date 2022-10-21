@@ -2,7 +2,9 @@ package com.root.pilot.board.controller;
 
 import com.root.pilot.board.dto.PageRequestDto;
 import com.root.pilot.board.service.PostsService;
+import com.root.pilot.user.domain.Role;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

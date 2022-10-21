@@ -1,11 +1,14 @@
 package com.root.pilot.board.domain;
 
 import com.root.pilot.commons.BaseEntity;
+import com.root.pilot.user.domain.Users;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,13 +28,15 @@ public class Posts extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private Long author;
+    @ManyToOne
+    @JoinColumn(name="id")
+    private Users user;
 
     @Builder
-    public Posts(String title, String content, Long author) {
+    public Posts(String title, String content, Users user) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
     }
 
     public void update(String title, String content) {

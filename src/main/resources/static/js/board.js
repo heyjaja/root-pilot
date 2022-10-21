@@ -12,34 +12,56 @@ const post = {
         if(deleteBtn) deleteBtn.addEventListener("click", _this.delete);
     },
     save : async function() {
-        if(!confirm("글을 등록하시겠습니까?")) {
+
+        const data = commons.getFormData("save-form");
+        const token = commons.getCookie("accessToken");
+        console.log(token);
+
+        if(!token) {
+            alert("로그인이 필요합니다.");
             return;
         }
 
-        const data = getFormData("save-form");
+        if(!confirm("글을 등록하시겠습니까?")) {
+            return;
+        }
 
         await fetch("/posts", {
             method: "POST",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify(data),
-        }).then((data)=>{
-            alert("글이 등록되었습니다.");
+        }).then((response)=>{
+
+            if(!response.ok) {
+                alert("오류가 발생했습니다.");
+            }
+
             window.location.href='/board'
+
         }).catch((error) => alert(JSON.stringify(error)))
     },
     update : async function() {
-        if(!confirm("글을 수정하시겠습니까?")) {
+
+        const data = commons.getFormData('update-form');
+        const token = commons.getCookie("accessToken");
+
+        if(!token) {
+            alert("로그인이 필요합니다.");
             return;
         }
 
-        const data = getFormData('update-form');
+        if(!confirm("글을 수정하시겠습니까?")) {
+            return;
+        }
 
         await fetch("/posts/"+postId.value, {
             method: "PATCH",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify(data),
         }).then(() => {
@@ -49,6 +71,14 @@ const post = {
     },
 
     delete : async function() {
+
+        const token = commons.getCookie("accessToken");
+
+        if(!token) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+
         if(!confirm("글을 삭제하시겠습니까?")) {
             return;
         }
@@ -57,6 +87,7 @@ const post = {
             method: "DELETE",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
             },
         }).then((data) => {
             alert("글이 삭제되었습니다.");
@@ -66,15 +97,3 @@ const post = {
 }
 
 post.init();
-
-
-
-function getFormData(formId) {
-    let form = document.getElementById(formId);
-    form = new FormData(form);
-    const formData = {};
-    form.forEach((value, key) => formData[key]=value);
-
-    return formData;
-
-}

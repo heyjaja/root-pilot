@@ -1,8 +1,10 @@
 package com.root.pilot.security.service;
 
 import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.security.jwt.TokenService;
 import com.root.pilot.user.domain.Users;
 import com.root.pilot.user.repository.UsersRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,10 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    UsersRepository usersRepository;
+    private final UsersRepository usersRepository;
+
+    private final TokenService tokenService;
+
 
     public CustomUserDetails create(Users user) {
 
@@ -43,6 +48,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         return create(user);
     }
 
+    @Transactional
+    public CustomUserDetails loadUserByToken(String token) {
+        CustomUserDetails userDetails = tokenService.getUserDetailsByToken(token);
 
+        return loadUserByUsername(userDetails.getEmail());
+
+    }
 
 }

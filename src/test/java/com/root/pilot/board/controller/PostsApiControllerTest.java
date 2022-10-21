@@ -6,6 +6,10 @@ import com.root.pilot.board.domain.Posts;
 import com.root.pilot.board.repository.PostsRepository;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import com.root.pilot.board.dto.PostsUpdateRequestDto;
+import com.root.pilot.user.domain.AuthProvider;
+import com.root.pilot.user.domain.Role;
+import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.repository.UsersRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,15 +37,19 @@ class PostsApiControllerTest {
     @Autowired
     private PostsRepository postsRepository;
 
+    @Autowired
+    private UsersRepository usersRepository;
+
     @Test
     public void TestRegisterPosts() {
         String title = "title";
         String content = "content";
+
         PostsSaveRequestDto requestDto =
             PostsSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .author(11L)
+                .user(1L)
                 .build();
 
         String url = "http://localhost:" + port + "/board";
@@ -61,10 +69,10 @@ class PostsApiControllerTest {
 
     @Test
     public void TestUpdatePosts() {
+
         Posts savedPosts = postsRepository.save(Posts.builder()
             .title("title")
             .content("content")
-            .author(11L)
             .build());
 
         Long updateId = savedPosts.getId();
@@ -94,10 +102,16 @@ class PostsApiControllerTest {
 
     @Test
     public void TestDeletePosts() {
+
+        Users user = Users.builder().email("test@test.test").name("tester").password("123456")
+            .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
+
+        usersRepository.save(user);
+
         Posts savedPosts = postsRepository.save(Posts.builder()
             .title("title")
             .content("content")
-            .author(11L)
+            .user(user)
             .build());
 
         Long deleteId = savedPosts.getId();

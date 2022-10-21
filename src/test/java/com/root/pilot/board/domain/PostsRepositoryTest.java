@@ -3,6 +3,10 @@ package com.root.pilot.board.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.root.pilot.board.repository.PostsRepository;
+import com.root.pilot.user.domain.AuthProvider;
+import com.root.pilot.user.domain.Role;
+import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.repository.UsersRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +22,9 @@ class PostsRepositoryTest {
     @Autowired
     PostsRepository postsRepository;
 
+    @Autowired
+    UsersRepository usersRepository;
+
     @AfterEach
     public void cleanUp() {
         postsRepository.deleteAll();
@@ -29,7 +36,12 @@ class PostsRepositoryTest {
         String title = "test title";
         String content = "test content";
 
-        postsRepository.save(Posts.builder().title(title).content(content).author(11L).build());
+        Users user = Users.builder().email("test@test.test").name("tester").password("123456")
+                .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
+
+        usersRepository.save(user);
+
+        postsRepository.save(Posts.builder().title(title).content(content).user(user).build());
 
         //when
         List<Posts> postsList = postsRepository.findAll();

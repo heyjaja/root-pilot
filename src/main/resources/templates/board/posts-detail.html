@@ -15,15 +15,15 @@
                     <span class="text-muted fs-sm"
                           th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}" id="date-area"></span>
                 </div>
-                <article class="mb-1" id="only-user">
+                <div class="mb-1 user-only">
                     <form>
                         <input type="hidden" name="id" th:value="${post.id}" id="id-area"/>
                     </form>
                     <a class="text-dark text-decoration-none fs-sm"
                        th:href="'/board/newpost/'+${post.id}" id="update-post-link">수정</a>
                     <span class="fs-sm"> | </span>
-                    <span class="fs-sm" role="button" tabindex="0" id="delete-btn">삭제</span>
-                </article>
+                    <span class="fs-sm" role="button" id="delete-btn">삭제</span>
+                </div>
             </header>
             <hr>
             <div th:text="${post.content}" id="contentArea">

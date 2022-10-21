@@ -4,7 +4,6 @@ import com.root.pilot.security.dto.CustomUserDetails;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
 import com.root.pilot.user.domain.Users;
-import java.net.http.HttpRequest;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -46,36 +45,18 @@ public class TokenService {
             .build();
     }
 
-    public Long getUserIdByToken(String jwt) {
-
-        Map<String, Object> claims = tokenProvider.getClaims(jwt);
-
-        return (Long) claims.get("id");
-    }
-
-    public String createAccessToken(Users user) {
+    public String createAccessToken(CustomUserDetails user) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("id", user.getId());
         claims.put("email", user.getEmail());
         claims.put("name", user.getName());
-        claims.put("role", user.getRoleForToString());
-        claims.put("authProvider", user.getAuthProviderForToString());
+        claims.put("role", user.getRole().toString());
+        claims.put("authProvider", user.getAuthProvider().toString());
 
         return tokenProvider.createAccessToken(claims);
 
     }
-
-    public String createRefreshToken(Users user) {
-        Map<String, Object> claims = new HashMap<>();
-
-        claims.put("id", user.getId());
-
-        return tokenProvider.createRefreshToken(claims);
-    }
-
-
-
 
 
 }

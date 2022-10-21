@@ -9,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,13 +17,18 @@ public class TokenProvider {
 
     static Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    private final String secretKey = "c3ByaW5nYm9vdC1waWxvdC1wcm9qZWN0LXJvb3Qtand0LXNlY3JldC1zZWNyZXQ=";
-    private final Long tokenValidityInSeconds = 86400L;
+    private final String secretKey;
+    //= "c3ByaW5nYm9vdC1waWxvdC1wcm9qZWN0LXJvb3Qtand0LXNlY3JldC1zZWNyZXQ=";
+    private final Long tokenValidityInSeconds;
+    //= 86400L;
 
     private Key key;
 
     @Autowired
-    public TokenProvider() {
+    public TokenProvider(@Value("${jwt.secret}") String secretKey,
+        @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds) {
+        this.secretKey = secretKey;
+        this.tokenValidityInSeconds = tokenValidityInSeconds;
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 

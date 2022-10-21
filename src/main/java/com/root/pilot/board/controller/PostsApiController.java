@@ -6,9 +6,11 @@ import com.root.pilot.board.dto.PostsResponseDto;
 import com.root.pilot.board.dto.PostsSaveRequestDto;
 import com.root.pilot.board.dto.PostsUpdateRequestDto;
 import com.root.pilot.board.service.PostsService;
+import com.root.pilot.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,9 +42,10 @@ public class PostsApiController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> save(@RequestBody PostsSaveRequestDto requestDto) {
+    public ResponseEntity<Long> save(@RequestBody PostsSaveRequestDto requestDto,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Long savedId = postsService.save(requestDto);
+        Long savedId = postsService.save(requestDto, userDetails.getId());
 
         return new ResponseEntity<>(savedId, HttpStatus.OK);
     }
