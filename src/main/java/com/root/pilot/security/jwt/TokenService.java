@@ -3,7 +3,6 @@ package com.root.pilot.security.jwt;
 import com.root.pilot.security.dto.CustomUserDetails;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.Users;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +33,8 @@ public class TokenService {
     }
 
     public CustomUserDetails getUserDetailsByToken(String jwt) {
+        tokenProvider.validateToken(jwt);
+
         Map<String, Object> claims = tokenProvider.getClaims(jwt);
 
         return CustomUserDetails.builder()

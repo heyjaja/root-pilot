@@ -1,23 +1,23 @@
 package com.root.pilot.board.dto;
 
-import com.root.pilot.board.domain.Posts;
-import com.root.pilot.user.domain.Users;
+import javax.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostsSaveRequestDto {
+public class PostSaveRequestDto {
+    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
     private String content;
-    private Long user;
+    private Long userId;
 
     @Builder
-    public PostsSaveRequestDto(String title, String content, Long user) {
+    public PostSaveRequestDto(String title, String content, Long userId) {
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.userId = userId;
     }
 
 }

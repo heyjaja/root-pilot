@@ -1,6 +1,6 @@
 package com.root.pilot.board.dto;
 
-import com.root.pilot.board.domain.Posts;
+import com.root.pilot.board.domain.Post;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -9,8 +9,8 @@ import lombok.Getter;
 import org.springframework.data.domain.Pageable;
 
 @Getter
-public class PostsListWithPageResponseDto {
-    private List<PostsListResponseDto> postsList;
+public class PostListWithPageResponseDto {
+    private List<PostListResponseDto> postsList;
     private Long totalPages;
     private Long totalCount;
 
@@ -22,9 +22,9 @@ public class PostsListWithPageResponseDto {
     private List<Integer> pageList;
 
     @Builder
-    public PostsListWithPageResponseDto(List<Posts> postsList, Long totalPages, Long totalCount, Pageable pageable) {
+    public PostListWithPageResponseDto(List<Post> postsList, Long totalPages, Long totalCount, Pageable pageable) {
         this.postsList = postsList.stream()
-            .map(PostsListResponseDto::new).collect(Collectors.toList());
+            .map(post -> new PostListResponseDto(post)).collect(Collectors.toList());
         this.totalPages = totalPages;
         this.totalCount = totalCount;
         makePageList(pageable);

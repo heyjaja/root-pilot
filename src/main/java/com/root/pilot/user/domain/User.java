@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Users extends BaseEntity {
+@Table(name = "users")
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -39,7 +42,7 @@ public class Users extends BaseEntity {
     private AuthProvider authProvider;
 
     @Builder
-    public Users(String email, String password, String name, Role role, String picture, AuthProvider authProvider) {
+    public User(String email, String password, String name, Role role, String picture, AuthProvider authProvider) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -48,7 +51,7 @@ public class Users extends BaseEntity {
         this.authProvider = authProvider;
     }
 
-    public Users update(String name, String picture) {
+    public User update(String name, String picture) {
         this.name = name;
         this.picture = picture;
 

@@ -1,10 +1,8 @@
 package com.root.pilot.board.controller;
 
 import com.root.pilot.board.dto.PageRequestDto;
-import com.root.pilot.board.service.PostsService;
-import com.root.pilot.user.domain.Role;
+import com.root.pilot.board.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/board")
 public class BoardController {
-    private final PostsService postsService;
+    private final PostService postService;
 
     @GetMapping
     public String getList(Model model, PageRequestDto pageRequestDto) {
-        model.addAttribute("posts", postsService.getListWithPaging(pageRequestDto));
+        model.addAttribute("posts", postService.getListWithPaging(pageRequestDto));
 
         return "board/index";
     }
@@ -30,16 +28,12 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public String postsRead(Model model, @PathVariable Long id) {
-        model.addAttribute("post", postsService.findById(id));
-
+    public String postsRead() {
         return "board/posts-detail";
     }
 
     @GetMapping("/newpost/{id}")
-    public String postsUpdate(Model model, @PathVariable Long id) {
-        model.addAttribute("post", postsService.findById(id));
-
+    public String postsUpdate() {
         return "board/posts-update";
     }
 

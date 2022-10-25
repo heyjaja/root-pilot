@@ -1,10 +1,10 @@
 package com.root.pilot.security.service;
 
 import com.root.pilot.security.dto.OAuthAttributes;
-import com.root.pilot.security.exception.OAuth2AuthenticationProcessingException;
+import com.root.pilot.exception.OAuth2AuthenticationProcessingException;
 import com.root.pilot.user.domain.AuthProvider;
-import com.root.pilot.user.domain.Users;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -47,9 +47,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new RuntimeException("Email not found from OAuth2 provider");
         }
 
-        Optional<Users> userOptional = usersRepository.findByEmail(attributes.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(attributes.getEmail());
 
-        Users user;
+        User user;
         if(userOptional.isPresent()) {
             user = userOptional.get();
             if (!user.getAuthProvider().equals(AuthProvider.valueOf(registrationId))) {
@@ -70,11 +70,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     // 구글 사용자 정보가 업데이트 되었을 때를 대비하여 update 기능 구현
-    public Users saveOrUpdate(OAuthAttributes attributes) {
-        Users user = usersRepository.findByEmail(attributes.getEmail())
+    public User saveOrUpdate(OAuthAttributes attributes) {
+        User user = userRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
                 .orElse(attributes.toEntity());
-        return usersRepository.save(user);
+        return userRepository.save(user);
     }
 
 }

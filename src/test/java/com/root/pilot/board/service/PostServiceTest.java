@@ -2,14 +2,14 @@ package com.root.pilot.board.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.root.pilot.board.domain.Posts;
-import com.root.pilot.board.repository.PostsRepository;
-import com.root.pilot.board.dto.PostsSaveRequestDto;
-import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.board.domain.Post;
+import com.root.pilot.board.dto.PostResponseDto;
+import com.root.pilot.board.repository.PostRepository;
+import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.Users;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,33 +19,38 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class PostsServiceTest {
+class PostServiceTest {
 
     @Autowired
-    PostsService postsService;
+    PostService postService;
 
     @Autowired
-    PostsRepository postsRepository;
+    PostRepository postRepository;
 
     @Autowired
-    UsersRepository usersRepository;
+    UserRepository userRepository;
 
     @Test
     public void TestSavePostsService() {
         //given
         String title = "test title";
         String content = "test content";
+        User user = User.builder().email("test@test.test").name("tester").password("123456")
+            .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
 
-        Long id = postsService.save(PostsSaveRequestDto.builder()
-            .title(title)
-            .content(content)
-            .user(1L)
-            .build() , 1L);
+        userRepository.save(user);
 
         //when
-        List<Posts> posts = postsRepository.findAll();
+        Long id = postService.save(PostSaveRequestDto.builder()
+            .title(title)
+            .content(content)
+            .userId(1L)
+            .build());
 
-        Posts post = posts.get(0);
+
+
+        //then
+        PostResponseDto post = postService.findById(id);
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getContent()).isEqualTo(content);
         assertThat(post.getId().equals(id));

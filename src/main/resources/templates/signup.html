@@ -12,33 +12,33 @@
 
           <div class="mb-3">
             <div class="form-floating mb-2">
-              <input type="text" class="form-control" id="floatingName" placeholder="name"
+              <input type="text" class="form-control" id="name" placeholder="name"
                      name="name"  required>
-              <label for="floatingName">이름</label>
+              <label for="name">이름</label>
               <div class="alert alert-warning collapse" role="alert" id="name-alert">
-                이름은 한글과 영문만 가능합니다.
+                이름은 2~20자 한글과 영문, 숫자만 가능합니다.
               </div>
             </div>
             <div class="form-floating mb-2">
-              <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com"
+              <input type="email" class="form-control" id="email" placeholder="name@example.com"
                      name="email" required>
-              <label for="floatingEmail">Email</label>
+              <label for="email">Email</label>
               <div class="alert alert-warning collapse" role="alert" id="email-alert">
                 올바른 이메일 형식이 아닙니다.
               </div>
             </div>
             <div class="form-floating mb-2">
-              <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+              <input type="password" class="form-control" id="password" placeholder="Password"
                      name="password" required>
-              <label for="floatingPassword">Password</label>
+              <label for="password">Password</label>
               <div class="alert alert-warning collapse" role="alert" id="password-alert">
                 비밀번호는 6자 이상 20자 이하만 가능합니다.
               </div>
             </div>
             <div class="form-floating mb-2">
-              <input type="password" class="form-control" id="floatingPassword2" placeholder="Password"
+              <input type="password" class="form-control" id="password2" placeholder="Password"
                      name="password2" required>
-              <label for="floatingPassword2">Password 확인</label>
+              <label for="password2">Password 확인</label>
               <div class="alert alert-warning collapse" role="alert" id="password2-alert">
                 비밀번호가 일치하지 않습니다.
               </div>
@@ -51,6 +51,82 @@
       </div>
   </main>
 
+  <script th:inline="javascript">
+    const signupBtn = document.getElementById('signup-btn');
+    signupBtn.addEventListener("click", signupBtnClickEventHandler);
+
+    function signupBtnClickEventHandler() {
+      const inputName = document.getElementById("name");
+      const inputEmail = document.getElementById("email");
+      const inputPassword = document.getElementById("password");
+      const inputPassword2 = document.getElementById("password2");
+      const nameAlert = document.getElementById("name-alert");
+      const emailAlert = document.getElementById("email-alert");
+      const passwordAlert = document.getElementById("password-alert");
+      const password2Alert = document.getElementById("password2-alert");
+
+
+      if(!inputName.value || !checkName(inputName.value)) {
+        showAlert(nameAlert);
+        inputName.focus();
+        return;
+      } else {
+        hideAlert(nameAlert);
+      }
+
+      if(!inputEmail.value || !checkEmail(inputEmail.value)) {
+        showAlert(emailAlert);
+        inputEmail.focus();
+        return;
+      } else {
+        hideAlert(emailAlert);
+      }
+
+      if(!inputPassword.value || 6 > inputPassword.value.length || inputPassword.value.length > 20) {
+        showAlert(passwordAlert);
+        inputPassword.focus();
+        return;
+      } else {
+        hideAlert(passwordAlert);
+      }
+
+      if(!inputPassword2.value) {
+        password2Alert.innerText = "비밀번호를 확인해주세요."
+        showAlert(password2Alert);
+        inputPassword2.focus();
+        return;
+      } else if(inputPassword.value != inputPassword2.value) {
+        password2Alert.innerText = "비밀번호가 일치하지 않습니다."
+        showAlert(password2Alert);
+        inputPassword2.focus();
+        return;
+      } else {
+        hideAlert(password2Alert);
+      }
+
+      user.save();
+
+
+    }
+
+    function checkName(name) {
+      const reg = /^[a-zA-Z가-힣1-9]{2,20}$/g;
+      return reg.test(name);
+    }
+
+    function checkEmail(email) {
+      const reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+      return reg.test(email);
+    }
+
+    function hideAlert(alert) {
+      alert.classList.add("collapse");
+    }
+
+    function showAlert(alert) {
+      alert.classList.remove("collapse");
+    }
+  </script>
 </th:block>
 
 </html>
