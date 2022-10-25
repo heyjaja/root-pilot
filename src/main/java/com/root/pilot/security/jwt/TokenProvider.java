@@ -1,5 +1,6 @@
 package com.root.pilot.security.jwt;
 
+import com.root.pilot.exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
@@ -64,13 +65,13 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt);
             return true;
         }  catch (MalformedJwtException ex) {
-            throw new MalformedJwtException("Invalid JWT token");
+            throw new TokenException("토큰이 유효하지 않습니다.");
         } catch (ExpiredJwtException ex) {
-            throw new JwtException("Expired JWT token");
+            throw new TokenException("토큰이 만료되었습니다.");
         } catch (UnsupportedJwtException ex) {
-            throw new UnsupportedJwtException("Unsupported JWT token");
+            throw new TokenException("지원하지 않는 토큰입니다.");
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("JWT claims string is empty.");
+            throw new TokenException("토큰 정보가 없습니다.");
         }
     }
 

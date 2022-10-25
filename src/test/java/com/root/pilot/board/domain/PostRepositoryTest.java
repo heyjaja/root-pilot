@@ -2,54 +2,56 @@ package com.root.pilot.board.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.root.pilot.board.repository.PostsRepository;
+import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.Users;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class PostsRepositoryTest {
+class PostRepositoryTest {
 
     @Autowired
-    PostsRepository postsRepository;
+    PostRepository postRepository;
 
     @Autowired
-    UsersRepository usersRepository;
+    UserRepository userRepository;
 
     @AfterEach
     public void cleanUp() {
-        postsRepository.deleteAll();
+        postRepository.deleteAll();
     }
 
     @Test
+    @Rollback(value = false)
     public void TestSavePostAndGetList() {
         //given
         String title = "test title";
         String content = "test content";
 
-        Users user = Users.builder().email("test@test.test").name("tester").password("123456")
+        User user = User.builder().email("test@test.test").name("tester").password("123456")
                 .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
 
-        usersRepository.save(user);
+        userRepository.save(user);
 
-        postsRepository.save(Posts.builder().title(title).content(content).user(user).build());
+        Post requestPost = Post.builder().title(title).content(content).user(user).build();
 
         //when
-        List<Posts> postsList = postsRepository.findAll();
+        Post savedPost = postRepository.save(requestPost);
+
 
         //then
-        Posts posts = postsList.get(0);
-        assertThat(posts.getTitle()).isEqualTo(title);
-        assertThat(posts.getContent()).isEqualTo(content);
+        assertThat(requestPost.getTitle()).isEqualTo(savedPost.getTitle());
+        assertThat(requestPost.getContent()).isEqualTo(savedPost.getContent());
     }
 
 }

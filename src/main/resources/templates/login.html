@@ -27,6 +27,10 @@
       <a href="/signup" role="button" class="w-100 btn btn-lg btn-secondary" th:text="회원가입"></a>
   </main>
 
+  <script th:inline="javascript">
+    const signinBtn = document.getElementById('signin-btn');
+    signinBtn.addEventListener("click", user.login);
+  </script>
 </th:block>
 
 </html>

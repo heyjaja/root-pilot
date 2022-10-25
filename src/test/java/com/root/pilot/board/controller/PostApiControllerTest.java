@@ -2,15 +2,17 @@ package com.root.pilot.board.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.root.pilot.board.domain.Posts;
-import com.root.pilot.board.repository.PostsRepository;
-import com.root.pilot.board.dto.PostsSaveRequestDto;
-import com.root.pilot.board.dto.PostsUpdateRequestDto;
+import com.root.pilot.board.domain.Post;
+import com.root.pilot.board.dto.PostResponseDto;
+import com.root.pilot.board.repository.PostRepository;
+import com.root.pilot.board.dto.PostSaveRequestDto;
+import com.root.pilot.board.dto.PostUpdateRequestDto;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.Users;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class PostsApiControllerTest {
+class PostApiControllerTest {
 
     @LocalServerPort
     private int port;
@@ -35,21 +37,26 @@ class PostsApiControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private PostsRepository postsRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @Test
     public void TestRegisterPosts() {
         String title = "title";
         String content = "content";
 
-        PostsSaveRequestDto requestDto =
-            PostsSaveRequestDto.builder()
+        User user = User.builder().email("test@test.test").name("tester").password("123456")
+            .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
+
+        userRepository.save(user);
+
+        PostSaveRequestDto requestDto =
+            PostSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .user(1L)
+                .userId(1L)
                 .build();
 
         String url = "http://localhost:" + port + "/board";
@@ -62,15 +69,15 @@ class PostsApiControllerTest {
         assertThat(responseEntity.getBody())
             .isGreaterThan(0L);
 
-        List<Posts> all = postsRepository.findAll();
-        assertThat(all.get(0).getTitle()).isEqualTo(title);
-        assertThat(all.get(0).getContent()).isEqualTo(content);
+        Optional<Post> post = postRepository.findById(responseEntity.getBody());
+        assertThat(post.get().getTitle()).isEqualTo(title);
+        assertThat(post.get().getContent()).isEqualTo(content);
     }
 
     @Test
     public void TestUpdatePosts() {
 
-        Posts savedPosts = postsRepository.save(Posts.builder()
+        Post savedPosts = postRepository.save(Post.builder()
             .title("title")
             .content("content")
             .build());
@@ -79,14 +86,14 @@ class PostsApiControllerTest {
         String updateTitle = "title2";
         String updateContent = "content2";
 
-        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+        PostUpdateRequestDto requestDto = PostUpdateRequestDto.builder()
             .title(updateTitle)
             .content(updateContent)
             .build();
 
         String url = "http://localhost:" + port + "/board/"+updateId;
 
-        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        HttpEntity<PostUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         ResponseEntity<Long> responseEntity =
             restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, Long.class);
@@ -94,7 +101,7 @@ class PostsApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
-        List<Posts> all = postsRepository.findAll();
+        List<Post> all = postRepository.findAll();
 
         assertThat(all.get(0).getTitle()).isEqualTo(updateTitle);
         assertThat(all.get(0).getContent()).isEqualTo(updateContent);
@@ -103,12 +110,12 @@ class PostsApiControllerTest {
     @Test
     public void TestDeletePosts() {
 
-        Users user = Users.builder().email("test@test.test").name("tester").password("123456")
+        User user = User.builder().email("test@test.test").name("tester").password("123456")
             .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
 
-        usersRepository.save(user);
+        userRepository.save(user);
 
-        Posts savedPosts = postsRepository.save(Posts.builder()
+        Post savedPosts = postRepository.save(Post.builder()
             .title("title")
             .content("content")
             .user(user)
@@ -124,7 +131,7 @@ class PostsApiControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
-        List<Posts> all = postsRepository.findAll();
+        List<Post> all = postRepository.findAll();
 
         assertThat(all.size()).isEqualTo(0);
 

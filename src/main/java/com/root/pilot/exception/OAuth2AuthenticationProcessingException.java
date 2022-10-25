@@ -1,4 +1,4 @@
-package com.root.pilot.security.exception;
+package com.root.pilot.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

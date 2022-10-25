@@ -1,0 +1,95 @@
+package com.root.pilot.board.service;
+
+import com.root.pilot.board.domain.Post;
+import com.root.pilot.board.dto.PageRequestDto;
+import com.root.pilot.board.repository.PostRepository;
+import com.root.pilot.board.dto.PostListWithPageResponseDto;
+import com.root.pilot.board.dto.PostResponseDto;
+import com.root.pilot.board.dto.PostSaveRequestDto;
+import com.root.pilot.board.dto.PostUpdateRequestDto;
+import com.root.pilot.board.repository.PostQueryRepository;
+import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
+import javax.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Service
+@Transactional
+public class PostService {
+    private final PostRepository postRepository;
+    private final PostQueryRepository postQueryRepository;
+    private final UserRepository userRepository;
+
+    // 글쓰기
+    public Long save(PostSaveRequestDto requestDto) {
+        User user = userRepository.findById(requestDto.getUserId())
+            .orElseThrow(() -> new EntityNotFoundException("사용자가 존재하지 않습니다."));
+
+        Post post = Post.builder().title(requestDto.getTitle())
+            .content(requestDto.getContent())
+            .user(user)
+            .build();
+
+        return postRepository.save(post).getId();
+    }
+
+    //글수정
+    public Long update(Long id, PostUpdateRequestDto requestDto) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+
+        if(!post.validateUser(requestDto.getUserId())) {
+            throw new IllegalArgumentException("본인만 수정할 수 있습니다.");
+        };
+
+        post.update(requestDto.getTitle(), requestDto.getContent());
+
+        return id;
+    }
+
+    // 글삭제
+    public Long delete(Long id, CustomUserDetails userDetails) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+
+        if(!post.validateUser(userDetails.getId())) {
+            throw new IllegalArgumentException("본인만 삭제할 수 있습니다.");
+        };
+
+        postRepository.delete(post);
+
+        return id;
+    }
+
+    // 글조회
+    @Transactional(readOnly = true)
+    public PostResponseDto findById(Long id) {
+        Post entity = postRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다"));
+
+        return new PostResponseDto(entity);
+    }
+
+    // 글목록 페이징
+    @Transactional(readOnly = true)
+    public PostListWithPageResponseDto getListWithPaging(PageRequestDto pageRequestDto) {
+
+        Pageable pageable = pageRequestDto.getPageable();
+
+        Page<Post> results = postQueryRepository.getPostsList(pageable);
+
+        return PostListWithPageResponseDto.builder()
+            .postsList(results.getContent())
+            .totalCount(results.getTotalElements())
+            .totalPages((long)results.getTotalPages())
+            .pageable(pageable)
+            .build();
+    }
+
+}

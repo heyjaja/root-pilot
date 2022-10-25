@@ -12,28 +12,79 @@
             <form id="update-form">
                 <div class="form-group mb-2">
                     <label for="id-area">글번호</label>
-                    <input type="text" class="form-control" name="id" th:value="${post.id}"
+                    <input type="text" class="form-control" name="id"
                            id="id-area" disabled/>
                 </div>
                 <div class="form-group mb-2">
                     <label for="title-area">제목</label>
                     <input type="text" class="form-control" name="title"
-                           id="title-area" th:value="${post.title}"/>
-                </div>
-                <div class="form-group mb-2">
-                    <label for="author-area">작성자</label>
-                    <input type="text" class="form-control" name="author"
-                           id="author-area" th:value="${post.author}" disabled/>
+                           id="title-area"/>
                 </div>
                 <div class="form-group mb-2">
                     <label for="content-area">내용</label>
                     <textarea class="form-control" name="content"
-                              id="content-area" th:text="${post.content}"></textarea>
+                              id="content-area"></textarea>
                 </div>
             </form>
             <a href="/board" role="button" class="btn btn-secondary">취소</a>
             <button type="button" class="btn btn-primary" id="update-btn">수정</button>
         </section>
     </main>
+    <script th:inline="javascript">
+
+        window.onload = async function() {
+            const getPostId = window.location.pathname.substring(15);
+            const getPost = await post.getPost(getPostId);
+
+            // load page
+            if(!commons.getCookie("accessToken")) {
+                alert("로그인이 필요합니다.");
+                window.location.href="/board";
+                return;
+            }
+
+            const titleArea = document.getElementById('title-area');
+            const idArea = document.getElementById('id-area');
+            const contentArea = document.getElementById('content-area');
+
+            function loadUpdatePage(post) {
+                titleArea.value = post.title;
+                contentArea.value = post.content;
+                idArea.value = post.postId;
+            }
+
+            loadUpdatePage(getPost);
+
+            // update event
+            const updateBtn = document.getElementById('update-btn');
+            updateBtn.addEventListener("click", updateBtnEventHandler);
+
+            async function updateBtnEventHandler(e) {
+                const token = commons.getCookie("accessToken");
+                const getUser = await user.getUser(token);
+
+                if(!token || !getUser) {
+                    alert("로그인이 필요합니다.");
+                    return;
+                } else if(getUser.userId != getPost.userId) {
+                    alert("사용자 정보가 일치하지 않습니다.");
+                    return;
+                } else if(!confirm("글을 수정하시겠습니까?")) {
+                    return;
+                }
+
+                const formData = commons.getFormData('update-form');
+
+                const data = {
+                    ...formData,
+                    userId: getUser.userId,
+                }
+
+                await post.update(token, data, getPostId);
+
+                window.location.href='/board/'+getPostId;
+            }
+        }
+    </script>
 </th:block>
 </html>

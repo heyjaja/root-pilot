@@ -15,10 +15,6 @@
                     <input type="text" class="form-control" name="title" id="title"/>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="author">작성자</label>
-                    <input type="text" class="form-control" name="author" id="author"/>
-                </div>
-                <div class="form-group mb-2">
                     <label for="content">내용</label>
                     <textarea class="form-control" name="content" id="content"></textarea>
                 </div>
@@ -27,5 +23,44 @@
             <button type="button" class="btn btn-primary" id="save-btn">등록</button>
         </section>
     </main>
+    <script th:inline="javascript">
+
+        if(!commons.getCookie("accessToken")) {
+            alert("로그인이 필요합니다.");
+            window.location.href = "/board";
+        }
+
+        const saveBtn = document.getElementById('save-btn');
+        saveBtn.addEventListener("click", saveBtnEventHandler);
+
+        async function saveBtnEventHandler(e) {
+            const token = commons.getCookie("accessToken");
+
+            if(!token) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+
+            const getUser = await user.getUser(token);
+
+            if(!getUser || !confirm("글을 등록하시겠습니까?")) {
+                return;
+            }
+
+            const formData = commons.getFormData("save-form");
+            const data = {
+                ...formData,
+                userId: getUser.userId,
+            }
+
+            await post.save(token, data);
+
+
+            window.location.href = '/board';
+
+
+
+        }
+    </script>
 </th:block>
 </html>

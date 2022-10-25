@@ -19,11 +19,11 @@
             </thead>
             <tbody>
             <tr th:each="post:${posts.postsList}">
-                <td th:text="${post.id}"></td>
-                <td><a class="link-dark get-post" th:href="'/board/'+${post.id}"
-                       th:text="${post.title}" th:id="${post.id}"></a>
+                <td th:text="${post.postId}"></td>
+                <td><a class="link-dark get-post" th:href="'/board/'+${post.postId}"
+                       th:text="${post.title}" th:id="${post.postId}"></a>
                 </td>
-                <td th:text="${post.author}"></td>
+                <td th:text="${post.user}"></td>
                 <td th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
             </tr>
             </tbody>

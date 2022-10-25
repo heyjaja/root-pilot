@@ -2,10 +2,9 @@ package com.root.pilot.security.service;
 
 import com.root.pilot.security.dto.CustomUserDetails;
 import com.root.pilot.security.jwt.TokenService;
-import com.root.pilot.user.domain.Users;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.domain.User;
+import com.root.pilot.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
 
     private final TokenService tokenService;
 
 
-    public CustomUserDetails create(Users user) {
+    public CustomUserDetails create(User user) {
 
         return CustomUserDetails.builder()
             .id(user.getId())
@@ -34,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Users user = usersRepository.findByEmail(email)
+        User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: "+email));
 
         return create(user);
@@ -42,18 +41,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public CustomUserDetails loadUserById(Long id) {
-        Users user = usersRepository.findById(id).orElseThrow(
+        User user = userRepository.findById(id).orElseThrow(
             () -> new UsernameNotFoundException("User not Found " + id));
 
         return create(user);
-    }
-
-    @Transactional
-    public CustomUserDetails loadUserByToken(String token) {
-        CustomUserDetails userDetails = tokenService.getUserDetailsByToken(token);
-
-        return loadUserByUsername(userDetails.getEmail());
-
     }
 
 }

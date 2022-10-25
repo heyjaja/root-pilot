@@ -3,11 +3,11 @@ package com.root.pilot.user.service;
 import com.root.pilot.security.dto.CustomUserDetails;
 import com.root.pilot.security.jwt.TokenService;
 import com.root.pilot.security.service.CustomUserDetailsService;
-import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.domain.User;
 import com.root.pilot.user.dto.LoginRequestDto;
 import com.root.pilot.user.dto.AuthResponseDto;
 import com.root.pilot.user.dto.SignUpRequestDto;
-import com.root.pilot.user.repository.UsersRepository;
+import com.root.pilot.user.repository.UserRepository;
 import javax.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
@@ -30,14 +30,31 @@ public class AuthService {
 
     @Transactional
     public Long registerUser(SignUpRequestDto requestDto) {
-        if (usersRepository.existsByEmail(requestDto.getEmail())) {
-            throw new EntityExistsException("해당 이메일이 존재합니다.");
+        existsByEmail(requestDto.getEmail());
+        existsByName(requestDto.getName());
+
+        if(!requestDto.validatePassword()) {
+            throw new IllegalArgumentException("입력한 비밀번호가 일치하지 않습니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        return usersRepository.save(requestDto.toEntity(encodedPassword)).getId();
+        return userRepository.save(requestDto.toEntity(encodedPassword)).getId();
 
+    }
+
+    @Transactional(readOnly = true)
+    public void existsByEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new EntityExistsException("해당 이메일이 존재합니다.");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void existsByName(String name) {
+        if (userRepository.existsByName(name)) {
+            throw new EntityExistsException("해당 이름이 존재합니다.");
+        }
     }
 
     @Transactional
@@ -45,7 +62,7 @@ public class AuthService {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
 
-        Users user = usersRepository.findByEmail(email).orElseThrow(
+        User user = userRepository.findByEmail(email).orElseThrow(
             () -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
 
         if(passwordEncoder.matches(password, user.getPassword())) {
@@ -63,7 +80,7 @@ public class AuthService {
             return new AuthResponseDto(accessToken);
         }
 
-        throw new RuntimeException("비밀번호가 틀림");
+        throw new IllegalArgumentException("비밀번호를 확인해주세요.");
 
 
 

@@ -19,5 +19,5 @@ const commons = {
         let cookieValue = name + "=" + value + '; path="/"; expires='+expireDate.toUTCString()+";";
 
         document.cookie=cookieValue;
-    }
+    },
 }

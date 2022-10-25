@@ -2,12 +2,10 @@ package com.root.pilot.security.dto;
 
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.Users;
+import com.root.pilot.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.Map;
 
 @Getter
@@ -67,8 +65,8 @@ public class OAuthAttributes {
     }
 
     // 가입할 때 User Entity 생성, 기본 권한: USER
-    public Users toEntity() {
-        return Users.builder()
+    public User toEntity() {
+        return User.builder()
                 .name(name)
                 .email(email)
                 .picture(picture)
