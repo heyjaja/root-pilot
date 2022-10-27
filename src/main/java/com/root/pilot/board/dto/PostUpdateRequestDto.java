@@ -11,7 +11,7 @@ public class PostUpdateRequestDto {
     @NotBlank(message = "제목을 입력해주세요.")
     private String title;
     private String content;
-    private Long userId;
+    private Long loginUserId;
 
     @Builder
     public PostUpdateRequestDto(String title, String content) {

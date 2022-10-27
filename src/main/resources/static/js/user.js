@@ -55,6 +55,34 @@ const user = {
 
         return getUser;
     },
+    checkName : async function(name) {
+        const result = await fetch("/auth/signup/exists-name", {
+            method: "post",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+            },
+            body: JSON.stringify(name),
+        }).then(response => response.json())
+        .catch(error => alert(error));
+
+        console.log(result);
+
+        return result;
+    },
+    checkEmail : async function(email) {
+        const result = await fetch("/auth/signup/exists-email", {
+            method: "post",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+            },
+            body: JSON.stringify(email),
+        }).then(response => response.json())
+        .catch(error => alert(error));
+
+        console.log(result);
+
+        return result;
+    },
 }
 
 function setToken(token, days) {

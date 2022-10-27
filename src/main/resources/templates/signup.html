@@ -5,122 +5,158 @@
       layout:decorate="~{/layout/layout}">
 
 <th:block layout:fragment="content">
-  <main class="m-auto" style="max-width:330px; padding:15px">
-      <div class="input-form col-md-12 mx-auto">
-        <h1 class="mb-3">회원가입</h1>
-        <form class="validation-form" id="signup-form" novalidate>
+    <main class="m-auto" style="max-width:330px; padding:15px">
+        <div class="input-form col-md-12 mx-auto">
+            <h1 class="mb-3">회원가입</h1>
+            <form class="validation-form" id="signup-form" novalidate>
 
-          <div class="mb-3">
-            <div class="form-floating input-group mb-2">
-              <input type="text" class="form-control" id="name" placeholder="name"
-                     name="name"  required>
-              <label for="name">이름</label>
-              <div class="alert alert-warning collapse" role="alert" id="name-alert">
-                이름은 2~20자 한글과 영문, 숫자만 가능합니다.
-              </div>
-            </div>
-            <div class="form-floating input-group mb-2">
-              <input type="email" class="form-control" id="email" placeholder="name@example.com"
-                     name="email" required>
-              <label for="email">Email</label>
-              <div class="alert alert-warning collapse" role="alert" id="email-alert">
-                올바른 이메일 형식이 아닙니다.
-              </div>
-            </div>
-            <div class="form-floating mb-2">
-              <input type="password" class="form-control" id="password" placeholder="Password"
-                     name="password" required>
-              <label for="password">Password</label>
-              <div class="alert alert-warning collapse" role="alert" id="password-alert">
-                비밀번호는 6자 이상 20자로 입력해주세요.
-              </div>
-            </div>
-            <div class="form-floating mb-2">
-              <input type="password" class="form-control" id="password2" placeholder="Password"
-                     name="password2" required>
-              <label for="password2">Password 확인</label>
-              <div class="alert alert-warning collapse" role="alert" id="password2-alert">
-              </div>
-            </div>
-          </div>
+                <div class="mb-3">
+                    <div class="form-floating input-group mb-2">
+                        <input type="text" class="form-control" id="name" placeholder="name"
+                               name="name" required>
+                        <label for="name">이름</label>
+                        <button class="btn btn-outline-secondary" type="button" id="check-name-btn">중복확인</button>
+                        <div class="alert alert-warning collapse" role="alert" id="name-alert">
 
-          <div class="mb-4"></div>
-          <button class="w-100 btn btn-primary btn-lg btn-block" type="button" id="signup-btn">가입 완료</button>
-        </form>
-      </div>
-  </main>
+                        </div>
+                    </div>
+                    <div class="form-floating input-group mb-2">
+                        <input type="email" class="form-control" id="email"
+                               placeholder="name@example.com"
+                               name="email" required>
+                        <label for="email">Email</label>
+                        <button class="btn btn-outline-secondary" type="button" id="check-email-btn">중복확인</button>
+                        <div class="alert alert-warning collapse" role="alert" id="email-alert">
 
-  <script th:inline="javascript">
-    const signupBtn = document.getElementById('signup-btn');
-    signupBtn.addEventListener("click", signupEventHandler);
+                        </div>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="password" class="form-control" id="password"
+                               placeholder="Password"
+                               name="password" required>
+                        <label for="password">Password</label>
+                        <div class="alert alert-warning collapse" role="alert" id="password-alert">
+                            비밀번호는 6자 이상 20자로 입력해주세요.
+                        </div>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="password" class="form-control" id="password2"
+                               placeholder="Password"
+                               name="password2" required>
+                        <label for="password2">Password 확인</label>
+                        <div class="alert alert-warning collapse" role="alert" id="password2-alert">
+                        </div>
+                    </div>
+                </div>
 
-    const inputs = document.querySelectorAll('.form-control');
-    inputs.forEach((input) => {
-      input.addEventListener("keyup", function(e) {
-        if(e.key === "Enter") {
-          signupEventHandler();
+                <div class="mb-4"></div>
+                <button class="w-100 btn btn-primary btn-lg btn-block" type="button"
+                        id="signup-btn">가입 완료
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        const nameAlert = document.getElementById("name-alert");
+        const emailAlert = document.getElementById("email-alert");
+        const passwordAlert = document.getElementById("password-alert");
+        const password2Alert = document.getElementById("password2-alert");
+
+        document.getElementById('signup-btn').addEventListener("click", signupEventHandler);
+        document.getElementById('check-name-btn').addEventListener("click", async function() {
+
+            const name = {
+                name: document.getElementById('name').value,
+            }
+
+            const result = await user.checkName(name);
+            nameAlert.innerText = result.message;
+            showAlert(nameAlert);
+
+        });
+        document.getElementById('check-email-btn').addEventListener("click", async function() {
+            const email = {
+                email: document.getElementById('email').value,
+            }
+            const result = await user.checkEmail(email);
+            emailAlert.innerText = result.message;
+            showAlert(emailAlert);
+        });
+
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach((input) => {
+            input.addEventListener("keyup", function (e) {
+                if (e.key === "Enter") {
+                    signupEventHandler();
+                } else {
+                    validateData();
+                }
+            })
+        });
+
+
+        // 유효성 검사
+        function validateData() {
+            const inputName = document.getElementById("name").value;
+            const inputEmail = document.getElementById("email").value;
+            const inputPassword = document.getElementById("password").value;
+            const inputPassword2 = document.getElementById("password2").value;
+            const regName = /^[a-zA-Z가-힣1-9]{2,20}$/g;
+            const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+            if (!inputName || !regName.test(inputName)) {
+                nameAlert.innerText = "이름은 2~20자 한글과 영문, 숫자만 가능합니다.";
+                showAlert(nameAlert);
+                return;
+            } else {
+                hideAlert(nameAlert);
+            }
+
+            if (!inputEmail || !regEmail.test(inputEmail)) {
+                emailAlert.innerText = "올바른 이메일 형식이 아닙니다.";
+                showAlert(emailAlert);
+                return;
+            } else {
+                hideAlert(emailAlert);
+            }
+
+            if (!inputPassword || 6 > inputPassword.length || inputPassword.length > 20) {
+                showAlert(passwordAlert);
+                return;
+            } else {
+                hideAlert(passwordAlert);
+            }
+
+            if (!inputPassword2) {
+                password2Alert.innerText = "비밀번호를 확인해주세요."
+                showAlert(password2Alert);
+                return;
+            } else if (inputPassword != inputPassword2) {
+                password2Alert.innerText = "비밀번호가 일치하지 않습니다."
+                showAlert(password2Alert);
+                return;
+            } else {
+                hideAlert(password2Alert);
+            }
         }
-      })
-    });
-
-    async function signupEventHandler() {
-      const inputName = document.getElementById("name").value;
-      const inputEmail = document.getElementById("email").value;
-      const inputPassword = document.getElementById("password").value;
-      const inputPassword2 = document.getElementById("password2").value;
-      const nameAlert = document.getElementById("name-alert");
-      const emailAlert = document.getElementById("email-alert");
-      const passwordAlert = document.getElementById("password-alert");
-      const password2Alert = document.getElementById("password2-alert");
-      const regName = /^[a-zA-Z가-힣1-9]{2,20}$/g;
-      const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
 
-      if(!inputName || !regName.test(inputName)) {
-        showAlert(nameAlert);
-        return;
-      } else {
-        hideAlert(nameAlert);
-      }
+        // 유효성 검사 + 회원가입
+        async function signupEventHandler() {
 
-      if(!inputEmail || !regEmail.test(inputEmail)) {
-        showAlert(emailAlert);
-        return;
-      } else {
-        hideAlert(emailAlert);
-      }
+            const data = commons.getFormData("signup-form");
+            await user.save(data);
+        }
 
-      if(!inputPassword || 6 > inputPassword.length || inputPassword.length > 20) {
-        showAlert(passwordAlert);
-        return;
-      } else {
-        hideAlert(passwordAlert);
-      }
+        function hideAlert(alert) {
+            alert.classList.add("collapse");
+        }
 
-      if(!inputPassword2) {
-        password2Alert.innerText = "비밀번호를 확인해주세요."
-        showAlert(password2Alert);
-        return;
-      } else if(inputPassword != inputPassword2) {
-        password2Alert.innerText = "비밀번호가 일치하지 않습니다."
-        showAlert(password2Alert);
-        return;
-      } else {
-        hideAlert(password2Alert);
-      }
-
-      const data = commons.getFormData("signup-form");
-      await user.save(data);
-    }
-
-    function hideAlert(alert) {
-      alert.classList.add("collapse");
-    }
-
-    function showAlert(alert) {
-      alert.classList.remove("collapse");
-    }
-  </script>
+        function showAlert(alert) {
+            alert.classList.remove("collapse");
+        }
+    </script>
 </th:block>
 
 </html>
