@@ -43,7 +43,7 @@ public class PostService {
         Post post = postRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
-        if(!post.validateUser(requestDto.getUserId())) {
+        if(!post.validateUser(requestDto.getLoginUserId())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         };
 

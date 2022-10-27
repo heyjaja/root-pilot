@@ -1,8 +1,11 @@
 package com.root.pilot.user.controller;
 
+import com.root.pilot.user.dto.ExistCheckEmailRequestDto;
+import com.root.pilot.user.dto.ExistCheckNameRequestDto;
 import com.root.pilot.user.dto.LoginRequestDto;
 import com.root.pilot.user.dto.AuthResponseDto;
 import com.root.pilot.user.dto.SignUpRequestDto;
+import com.root.pilot.user.dto.ValidResponseDto;
 import com.root.pilot.user.service.AuthService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,20 @@ public class AuthApiController {
         AuthResponseDto responseDto = authService.signInUser(requestDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/signup/exists-name")
+    public ResponseEntity<ValidResponseDto> validateName(@Valid @RequestBody ExistCheckNameRequestDto requestDto) {
+        authService.existsByName(requestDto.getName());
+
+        return new ResponseEntity<>(new ValidResponseDto("사용할 수 있는 이름입니다."), HttpStatus.OK);
+    }
+
+    @PostMapping("/signup/exists-email")
+    public ResponseEntity<ValidResponseDto> validateEmail(@Valid @RequestBody ExistCheckEmailRequestDto requestDto) {
+        authService.existsByEmail(requestDto.getEmail());
+
+        return new ResponseEntity<>(new ValidResponseDto("사용할 수 있는 이메일입니다."), HttpStatus.OK);
     }
 
 }

@@ -53,7 +53,8 @@ public class PostApiController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> update(@PathVariable Long id, @Valid @RequestBody PostUpdateRequestDto requestDto) {
+    public ResponseEntity<Long> update(
+        @PathVariable Long id, @Valid @RequestBody PostUpdateRequestDto requestDto) {
 
         Long updatedId = postService.update(id, requestDto);
 
@@ -61,7 +62,8 @@ public class PostApiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<Long> delete(
+        @PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Long deletedId = postService.delete(id, userDetails.getId());
 

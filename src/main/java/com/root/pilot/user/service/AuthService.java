@@ -65,7 +65,7 @@ public class AuthService {
 
         if(passwordEncoder.matches(password, user.getPassword())) {
 
-            CustomUserDetails userDetails = customUserDetailsService.loadUserById(user.getId());
+            CustomUserDetails userDetails = customUserDetailsService.create(user);
 
             UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null,

@@ -45,6 +45,7 @@ public class PostQueryRepository {
         //count 구하기
         JPAQuery<Long> countQuery = query
             .select(post.count())
+            .where(builder)
             .from(post);
 
         return PageableExecutionUtils.getPage(postsList, pageable, countQuery::fetchOne);

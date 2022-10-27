@@ -79,7 +79,7 @@
 
                 const data = {
                     ...formData,
-                    userId: getUser.userId,
+                    loginUserId: getUser.userId,
                 }
 
                 await post.update(token, data, postId);
