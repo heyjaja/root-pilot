@@ -6,6 +6,7 @@
 
 <th:block layout:fragment="content">
     <main>
+        <hr>
         <article>
             <header>
                 <h1 class="mb-2" id="title-area"></h1>
@@ -17,6 +18,7 @@
                 <div class="mb-1 collapse" id="auth-only">
                     <form>
                         <input type="hidden" name="id" id="id-area"/>
+                        <input type="hidden" name="user-id" id="user-id-area" />
                     </form>
                     <a class="text-dark text-decoration-none fs-sm" id="update-post-link">수정</a>
                     <span class="fs-sm"> | </span>
@@ -30,59 +32,56 @@
     </main>
     <script th:inline="javascript">
 
-        window.onload = async function() {
-            const getPostId = window.location.pathname.substring(7);
-            const token = commons.getCookie("accessToken");
+            async function loadDetailPage() {
+                const getPostId = window.location.pathname.substring(7);
+                const token = commons.getCookie("accessToken");
 
-            const getUser = await user.getUser(token);
-            const getPost = await post.getPost(getPostId);
+                const getPost = await post.getPost(getPostId);
 
-            const titleArea = document.getElementById('title-area');
-            const idArea = document.getElementById('id-area');
-            const contentArea = document.getElementById('content-area');
-            const userArea = document.getElementById('user-area');
-            const dateArea = document.getElementById('date-area');
-            const updatePostLink = document.getElementById('update-post-link');
-            const authOnly = document.getElementById('auth-only');
+                document.getElementById('id-area').value = getPost.postId;
+                document.getElementById('title-area').innerText = getPost.title;
+                document.getElementById('user-area').innerText = getPost.user;
+                document.getElementById('user-id-area').value = getPost.userId;
+                document.getElementById('content-area').innerText = getPost.content;
+                document.getElementById('date-area').innerText = getPost.createdDate.replace("T", " ");
+                document.getElementById('update-post-link').href = "/board/newpost/"+ getPost.postId;
 
-            function loadDetailPage(post, user) {
-                titleArea.innerText = post.title;
-                userArea.innerText = post.user;
-                contentArea.innerText = post.content;
-                idArea.value = post.postId;
-                dateArea.innerText = post.modifiedDate.replace("T", " ");
-                updatePostLink.href = "/board/newpost/"+ post.postId;
-
-                if(user && (user.userId === post.userId)) {
-                    authOnly.classList.remove("collapse");
+                if(token) {
+                    const getUser = await user.getUser(token);
+                    if(getUser && (getUser.userId === getPost.userId)) {
+                        document.getElementById('auth-only').classList.remove("collapse");
+                    }
                 }
+
             }
 
-            loadDetailPage(getPost, getUser);
+            loadDetailPage();
 
             // 삭제
             const deleteBtn = document.getElementById('delete-btn');
             deleteBtn.addEventListener("click", deleteBtnEventHandler);
 
             async function deleteBtnEventHandler(e) {
+                const postUserId = document.getElementById('user-id-area').value;
+                const postId = document.getElementById('id-area').value;
+
+                const token = commons.getCookie("accessToken");
+                const getUser = await user.getUser(token);
+
 
                 if(!getUser || !token) {
                     alert("로그인이 필요합니다.");
                     return;
-                } else if(getUser.userId != getPost.userId) {
+                } else if(getUser.userId != postUserId) {
                     alert("사용자 정보가 일치하지 않습니다.");
                     return;
                 } else if(!confirm("글을 삭제하시겠습니까?")) {
                     return;
                 }
 
-                const postId = document.getElementById('id-area').value;
-
                 await post.delete(token, postId);
 
-                window.location.href = '/board';
             }
-        }
 
     </script>
 </th:block>

@@ -51,11 +51,14 @@ public class User extends BaseEntity {
         this.authProvider = authProvider;
     }
 
-    public User update(String name, String picture) {
-        this.name = name;
+    public User updatePicture(String picture) {
         this.picture = picture;
 
         return this;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
     public String getAuthProviderForToString() {
         return authProvider.toString();

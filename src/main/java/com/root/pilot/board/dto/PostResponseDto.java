@@ -11,7 +11,7 @@ public class PostResponseDto {
     private String content;
     private String user;
     private Long userId;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime createdDate;
 
     public PostResponseDto(Post entity) {
         this.postId = entity.getId();
@@ -19,7 +19,7 @@ public class PostResponseDto {
         this.content = entity.getContent();
         this.user = entity.getUser().getName();
         this.userId = entity.getUser().getId();
-        this.modifiedDate = entity.getModifiedDate();
+        this.createdDate = entity.getModifiedDate();
     }
 
 }

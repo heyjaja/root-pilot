@@ -1,12 +1,12 @@
 package com.root.pilot.board.controller;
 
 import com.root.pilot.board.dto.PageRequestDto;
+import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
@@ -17,9 +17,11 @@ public class BoardController {
 
     @GetMapping
     public String getList(Model model, PageRequestDto pageRequestDto) {
-        model.addAttribute("posts", postService.getListWithPaging(pageRequestDto));
+        PostListWithPageResponseDto responseDto =
+            postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+        model.addAttribute("posts", responseDto);
 
-        return "board/index";
+        return "board/list";
     }
 
     @GetMapping("/newpost")

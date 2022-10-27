@@ -12,6 +12,7 @@ const post = {
             if(data.error) {
                 throw new Error(data.message);
             }
+            window.location.href="/board";
         })
         .catch((error) => alert(error));
     },
@@ -28,6 +29,8 @@ const post = {
             if(data.error) {
                 throw new Error(data.message);
             }
+
+            window.location.href = '/board/' + postId;
         })
         .catch((error) => alert(error));
     },
@@ -44,6 +47,7 @@ const post = {
             if(data.error) {
                 throw new Error(data.message);
             }
+            window.location.href = '/board';
         })
         .catch((error) => alert(error));
     },
@@ -65,5 +69,5 @@ const post = {
         });
 
         return post;
-    }
+    },
 }

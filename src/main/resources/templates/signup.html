@@ -11,7 +11,7 @@
         <form class="validation-form" id="signup-form" novalidate>
 
           <div class="mb-3">
-            <div class="form-floating mb-2">
+            <div class="form-floating input-group mb-2">
               <input type="text" class="form-control" id="name" placeholder="name"
                      name="name"  required>
               <label for="name">이름</label>
@@ -19,7 +19,7 @@
                 이름은 2~20자 한글과 영문, 숫자만 가능합니다.
               </div>
             </div>
-            <div class="form-floating mb-2">
+            <div class="form-floating input-group mb-2">
               <input type="email" class="form-control" id="email" placeholder="name@example.com"
                      name="email" required>
               <label for="email">Email</label>
@@ -32,7 +32,7 @@
                      name="password" required>
               <label for="password">Password</label>
               <div class="alert alert-warning collapse" role="alert" id="password-alert">
-                비밀번호는 6자 이상 20자 이하만 가능합니다.
+                비밀번호는 6자 이상 20자로 입력해주세요.
               </div>
             </div>
             <div class="form-floating mb-2">
@@ -40,7 +40,6 @@
                      name="password2" required>
               <label for="password2">Password 확인</label>
               <div class="alert alert-warning collapse" role="alert" id="password2-alert">
-                비밀번호가 일치하지 않습니다.
               </div>
             </div>
           </div>
@@ -53,70 +52,65 @@
 
   <script th:inline="javascript">
     const signupBtn = document.getElementById('signup-btn');
-    signupBtn.addEventListener("click", signupBtnClickEventHandler);
+    signupBtn.addEventListener("click", signupEventHandler);
 
-    function signupBtnClickEventHandler() {
-      const inputName = document.getElementById("name");
-      const inputEmail = document.getElementById("email");
-      const inputPassword = document.getElementById("password");
-      const inputPassword2 = document.getElementById("password2");
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach((input) => {
+      input.addEventListener("keyup", function(e) {
+        if(e.key === "Enter") {
+          signupEventHandler();
+        }
+      })
+    });
+
+    async function signupEventHandler() {
+      const inputName = document.getElementById("name").value;
+      const inputEmail = document.getElementById("email").value;
+      const inputPassword = document.getElementById("password").value;
+      const inputPassword2 = document.getElementById("password2").value;
       const nameAlert = document.getElementById("name-alert");
       const emailAlert = document.getElementById("email-alert");
       const passwordAlert = document.getElementById("password-alert");
       const password2Alert = document.getElementById("password2-alert");
+      const regName = /^[a-zA-Z가-힣1-9]{2,20}$/g;
+      const regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
 
-      if(!inputName.value || !checkName(inputName.value)) {
+      if(!inputName || !regName.test(inputName)) {
         showAlert(nameAlert);
-        inputName.focus();
         return;
       } else {
         hideAlert(nameAlert);
       }
 
-      if(!inputEmail.value || !checkEmail(inputEmail.value)) {
+      if(!inputEmail || !regEmail.test(inputEmail)) {
         showAlert(emailAlert);
-        inputEmail.focus();
         return;
       } else {
         hideAlert(emailAlert);
       }
 
-      if(!inputPassword.value || 6 > inputPassword.value.length || inputPassword.value.length > 20) {
+      if(!inputPassword || 6 > inputPassword.length || inputPassword.length > 20) {
         showAlert(passwordAlert);
-        inputPassword.focus();
         return;
       } else {
         hideAlert(passwordAlert);
       }
 
-      if(!inputPassword2.value) {
+      if(!inputPassword2) {
         password2Alert.innerText = "비밀번호를 확인해주세요."
         showAlert(password2Alert);
-        inputPassword2.focus();
         return;
-      } else if(inputPassword.value != inputPassword2.value) {
+      } else if(inputPassword != inputPassword2) {
         password2Alert.innerText = "비밀번호가 일치하지 않습니다."
         showAlert(password2Alert);
-        inputPassword2.focus();
         return;
       } else {
         hideAlert(password2Alert);
       }
 
-      user.save();
-
-
-    }
-
-    function checkName(name) {
-      const reg = /^[a-zA-Z가-힣1-9]{2,20}$/g;
-      return reg.test(name);
-    }
-
-    function checkEmail(email) {
-      const reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-      return reg.test(email);
+      const data = commons.getFormData("signup-form");
+      await user.save(data);
     }
 
     function hideAlert(alert) {

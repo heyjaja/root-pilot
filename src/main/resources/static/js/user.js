@@ -1,45 +1,41 @@
 const user = {
-    save : async function() {
+    save : async function(user) {
         if(!confirm("회원가입을 하시겠습니까?")) {
             return;
         }
 
-        const data = commons.getFormData("signup-form");
-
-        await fetch("/auth/signup", {
+        const result = await fetch("/auth/signup", {
             method: "POST",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(user),
         }).then((response) => response.json())
         .then((data) => {
             if(data.error) throw new Error(data.message);
 
-            alert("회원가입이 완료됐습니다.")
             window.location.href="/board";
         })
         .catch((error) => alert(error));
+
+        return result;
     },
 
-    login : async function() {
-
-        const data = commons.getFormData('login-form');
-
-        await fetch("/auth/signin", {
+    login : async function(user) {
+        const token = await fetch("/auth/signin", {
             method: "POST",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(user),
         }).then((response) => response.json())
         .then((data) => {
             if(data.error) throw new Error(data.message);
-
-            setToken(data.accessToken, 1);
-            window.location.href = "/board";
+            return data;
         })
         .catch((error) => alert(error));
+
+        return token;
 
 
     },
@@ -58,7 +54,7 @@ const user = {
         .catch((error) => alert(error));
 
         return getUser;
-    }
+    },
 }
 
 function setToken(token, days) {

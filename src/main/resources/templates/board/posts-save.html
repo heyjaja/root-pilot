@@ -35,15 +35,14 @@
 
         async function saveBtnEventHandler(e) {
             const token = commons.getCookie("accessToken");
+            const getUser = await user.getUser(token);
 
-            if(!token) {
+            if(!token || !getUser) {
                 alert("로그인이 필요합니다.");
                 return;
             }
 
-            const getUser = await user.getUser(token);
-
-            if(!getUser || !confirm("글을 등록하시겠습니까?")) {
+            if(!confirm("글을 등록하시겠습니까?")) {
                 return;
             }
 
@@ -54,9 +53,6 @@
             }
 
             await post.save(token, data);
-
-
-            window.location.href = '/board';
 
 
 

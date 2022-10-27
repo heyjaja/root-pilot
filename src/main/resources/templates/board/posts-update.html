@@ -25,6 +25,7 @@
                     <textarea class="form-control" name="content"
                               id="content-area"></textarea>
                 </div>
+                <input type="hidden" id="user-id-area" disabled/>
             </form>
             <a href="/board" role="button" class="btn btn-secondary">취소</a>
             <button type="button" class="btn btn-primary" id="update-btn">수정</button>
@@ -32,28 +33,25 @@
     </main>
     <script th:inline="javascript">
 
-        window.onload = async function() {
-            const getPostId = window.location.pathname.substring(15);
-            const getPost = await post.getPost(getPostId);
-
             // load page
-            if(!commons.getCookie("accessToken")) {
-                alert("로그인이 필요합니다.");
-                window.location.href="/board";
-                return;
+            async function loadUpdatePage() {
+                const getPostId = window.location.pathname.substring(15);
+
+                if(!commons.getCookie("accessToken")) {
+                    alert("로그인이 필요합니다.");
+                    window.location.href="/board/"+getPostId;
+                    return;
+                }
+
+                const getPost = await post.getPost(getPostId);
+
+                document.getElementById('title-area').value = getPost.title;
+                document.getElementById('content-area').value = getPost.content;
+                document.getElementById('id-area').value = getPost.postId;
+                document.getElementById('user-id-area').value = getPost.userId;
             }
 
-            const titleArea = document.getElementById('title-area');
-            const idArea = document.getElementById('id-area');
-            const contentArea = document.getElementById('content-area');
-
-            function loadUpdatePage(post) {
-                titleArea.value = post.title;
-                contentArea.value = post.content;
-                idArea.value = post.postId;
-            }
-
-            loadUpdatePage(getPost);
+            loadUpdatePage();
 
             // update event
             const updateBtn = document.getElementById('update-btn');
@@ -61,15 +59,19 @@
 
             async function updateBtnEventHandler(e) {
                 const token = commons.getCookie("accessToken");
+                const postId = document.getElementById('id-area').value;
+                const userId = document.getElementById('user-id-area').value;
                 const getUser = await user.getUser(token);
 
-                if(!token || !getUser) {
+                if (!token || !getUser) {
                     alert("로그인이 필요합니다.");
+                    window.location.href="/board/"+postId;
                     return;
-                } else if(getUser.userId != getPost.userId) {
-                    alert("사용자 정보가 일치하지 않습니다.");
+                } else if (getUser.userId != userId) {
+                    alert("작성자만 수정할 수 있습니다.");
+                    window.location.href="/board/"+postId;
                     return;
-                } else if(!confirm("글을 수정하시겠습니까?")) {
+                } else if (!confirm("글을 수정하시겠습니까?")) {
                     return;
                 }
 
@@ -80,11 +82,8 @@
                     userId: getUser.userId,
                 }
 
-                await post.update(token, data, getPostId);
-
-                window.location.href='/board/'+getPostId;
+                await post.update(token, data, postId);
             }
-        }
     </script>
 </th:block>
 </html>

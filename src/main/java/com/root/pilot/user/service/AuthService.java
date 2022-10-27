@@ -10,7 +10,6 @@ import com.root.pilot.user.dto.SignUpRequestDto;
 import com.root.pilot.user.repository.UserRepository;
 import javax.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,13 +24,12 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
 
     @Transactional
     public Long registerUser(SignUpRequestDto requestDto) {
-        existsByEmail(requestDto.getEmail());
         existsByName(requestDto.getName());
+        existsByEmail(requestDto.getEmail());
 
         if(!requestDto.validatePassword()) {
             throw new IllegalArgumentException("입력한 비밀번호가 일치하지 않습니다.");
