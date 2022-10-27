@@ -1,7 +1,10 @@
 package com.root.pilot.user.controller;
 
 import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.user.dto.UserListResponseDto;
 import com.root.pilot.user.dto.UserResponseDto;
+import com.root.pilot.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
+public class UserApiController {
 
-    @GetMapping()
+    private final UserService userService;
+
+    @GetMapping
     public ResponseEntity<UserResponseDto> getLoginUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         UserResponseDto responseDto = UserResponseDto.builder()
@@ -23,4 +29,11 @@ public class UserController {
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<UserListResponseDto> getUserList() {
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    }
+
+
 }

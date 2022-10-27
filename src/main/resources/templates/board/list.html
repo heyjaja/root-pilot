@@ -14,7 +14,7 @@
                 <th>번호</th>
                 <th>제목</th>
                 <th>작성자</th>
-                <th>최종수정일</th>
+                <th>작성일</th>
             </tr>
             </thead>
             <tbody>
@@ -24,7 +24,7 @@
                        th:text="${post.title}" th:id="${post.postId}"></a>
                 </td>
                 <td th:text="${post.user}"></td>
-                <td th:text="${#temporals.format(post.modifiedDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>
@@ -33,16 +33,16 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item">
-                        <a class="page-link" th:href="@{/board(page=${posts.start - 1})}" aria-label="Previous"
+                        <a class="page-link" th:href="@{/board(page=${posts.start - 1}, keyword=${posts.keyword})}" aria-label="Previous"
                            th:classappend="${posts.isPrev()} ? '' : disabled">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <li th:class="'page-item '+${posts.page == page ? 'active' : ''}" th:each="page: ${posts.getPageList()}">
-                        <a class="page-link" th:href="@{/board(page=${page})}" th:text="${page}"></a>
+                        <a class="page-link" th:href="@{/board(page=${page}, keyword=${posts.keyword})}" th:text="${page}"></a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" th:href="@{/board(page=${posts.end + 1})}" aria-label="Next"
+                        <a class="page-link" th:href="@{/board(page=${posts.end + 1}, keyword=${posts.keyword})}" aria-label="Next"
                            th:classappend="${posts.isNext()} ? '' : disabled">
                             <span aria-hidden="true">&raquo;</span>
                         </a>

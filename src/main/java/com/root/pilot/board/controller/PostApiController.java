@@ -30,7 +30,8 @@ public class PostApiController {
 
     @GetMapping
     public ResponseEntity<PostListWithPageResponseDto> getList(PageRequestDto pageRequestDto) {
-        PostListWithPageResponseDto responseDto = postService.getListWithPaging(pageRequestDto);
+        PostListWithPageResponseDto responseDto =
+            postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -62,7 +63,7 @@ public class PostApiController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        Long deletedId = postService.delete(id, userDetails);
+        Long deletedId = postService.delete(id, userDetails.getId());
 
         return new ResponseEntity<>(deletedId, HttpStatus.OK);
     }

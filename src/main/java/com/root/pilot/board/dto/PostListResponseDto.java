@@ -10,18 +10,13 @@ public class PostListResponseDto {
     private Long postId;
     private String title;
     private String user;
-    private LocalDateTime modifiedDate;
+    private LocalDateTime createdDate;
 
     public PostListResponseDto(Post entity) {
         this.postId = entity.getId();
         this.title = entity.getTitle();
         this.user = entity.getUser().getName();
-        this.modifiedDate = entity.getModifiedDate();
-    }
-
-    public Page<PostListResponseDto> toPageDtoList(Page<Post> posts) {
-
-        return posts.map(post -> new PostListResponseDto(post));
+        this.createdDate = entity.getCreatedDate();
     }
 
 }

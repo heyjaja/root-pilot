@@ -12,11 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    private final TokenService tokenService;
 
 
     public CustomUserDetails create(User user) {
@@ -31,7 +30,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    @Transactional
     public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: "+email));
@@ -39,7 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         return create(user);
     }
 
-    @Transactional
     public CustomUserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
             () -> new UsernameNotFoundException("User not Found " + id));

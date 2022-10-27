@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthApiController {
 
-    private final AuthService usersService;
+    private final AuthService authService;
 
     @PostMapping("/signup")
     public ResponseEntity<Long> registerUser(@Valid @RequestBody SignUpRequestDto requestDto) {
 
-        Long id = usersService.registerUser(requestDto);
+        Long id = authService.registerUser(requestDto);
 
         return new ResponseEntity<>(id, HttpStatus.OK);
     }
@@ -31,14 +31,9 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<AuthResponseDto> authenticateUser(@Valid @RequestBody LoginRequestDto requestDto) {
 
-        AuthResponseDto responseDto = usersService.signInUser(requestDto);
+        AuthResponseDto responseDto = authService.signInUser(requestDto);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
-
-
-
-
-
 
 }

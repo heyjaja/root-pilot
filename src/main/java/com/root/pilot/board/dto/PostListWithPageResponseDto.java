@@ -19,14 +19,17 @@ public class PostListWithPageResponseDto {
     private int start, end;
     private boolean prev, next;
 
+    private String keyword;
+
     private List<Integer> pageList;
 
     @Builder
-    public PostListWithPageResponseDto(List<Post> postsList, Long totalPages, Long totalCount, Pageable pageable) {
+    public PostListWithPageResponseDto(List<Post> postsList, Long totalPages, Long totalCount, Pageable pageable, String keyword) {
         this.postsList = postsList.stream()
             .map(post -> new PostListResponseDto(post)).collect(Collectors.toList());
         this.totalPages = totalPages;
         this.totalCount = totalCount;
+        this.keyword = keyword;
         makePageList(pageable);
     }
 

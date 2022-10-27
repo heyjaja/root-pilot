@@ -2,13 +2,12 @@ package com.root.pilot.board.service;
 
 import com.root.pilot.board.domain.Post;
 import com.root.pilot.board.dto.PageRequestDto;
-import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.PostResponseDto;
 import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
 import com.root.pilot.board.repository.PostQueryRepository;
-import com.root.pilot.security.dto.CustomUserDetails;
+import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.user.domain.User;
 import com.root.pilot.user.repository.UserRepository;
 import javax.persistence.EntityNotFoundException;
@@ -45,7 +44,7 @@ public class PostService {
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         if(!post.validateUser(requestDto.getUserId())) {
-            throw new IllegalArgumentException("본인만 수정할 수 있습니다.");
+            throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         };
 
         post.update(requestDto.getTitle(), requestDto.getContent());
@@ -54,17 +53,17 @@ public class PostService {
     }
 
     // 글삭제
-    public Long delete(Long id, CustomUserDetails userDetails) {
-        Post post = postRepository.findById(id)
+    public Long delete(Long PostId, Long userId) {
+        Post post = postRepository.findById(PostId)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
-        if(!post.validateUser(userDetails.getId())) {
+        if(!post.validateUser(userId)) {
             throw new IllegalArgumentException("본인만 삭제할 수 있습니다.");
         };
 
         postRepository.delete(post);
 
-        return id;
+        return PostId;
     }
 
     // 글조회
@@ -78,16 +77,14 @@ public class PostService {
 
     // 글목록 페이징
     @Transactional(readOnly = true)
-    public PostListWithPageResponseDto getListWithPaging(PageRequestDto pageRequestDto) {
-
-        Pageable pageable = pageRequestDto.getPageable();
-
-        Page<Post> results = postQueryRepository.getPostsList(pageable);
+    public PostListWithPageResponseDto getListWithPaging(Pageable pageable, String keyword) {
+        Page<Post> results = postQueryRepository.getPostsList(pageable, keyword);
 
         return PostListWithPageResponseDto.builder()
             .postsList(results.getContent())
             .totalCount(results.getTotalElements())
             .totalPages((long)results.getTotalPages())
+            .keyword(keyword)
             .pageable(pageable)
             .build();
     }

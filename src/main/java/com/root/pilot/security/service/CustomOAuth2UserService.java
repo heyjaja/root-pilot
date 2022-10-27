@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
@@ -70,9 +71,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     // 구글 사용자 정보가 업데이트 되었을 때를 대비하여 update 기능 구현
+    @Transactional
     public User saveOrUpdate(OAuthAttributes attributes) {
         User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
+                .map(entity -> entity.updatePicture(attributes.getPicture()))
                 .orElse(attributes.toEntity());
         return userRepository.save(user);
     }
