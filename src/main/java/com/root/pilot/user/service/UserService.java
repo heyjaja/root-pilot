@@ -1,5 +1,6 @@
 package com.root.pilot.user.service;
 
+import com.root.pilot.board.repository.PostQueryRepository;
 import com.root.pilot.user.domain.User;
 import com.root.pilot.user.dto.UserListResponseDto;
 import com.root.pilot.user.repository.UserRepository;

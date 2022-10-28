@@ -52,4 +52,24 @@ public class PostQueryRepository {
 
     }
 
+    public Page<Post> findPostsByUser(Pageable pageable, Long userId) {
+
+        List<Post> postsList = query
+            .selectFrom(post)
+            .where(post.user.id.eq(userId))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(post.id.desc())
+            .fetch();
+
+        JPAQuery<Long> countQuery = query
+            .select(post.count())
+            .where(post.user.id.eq(userId))
+            .from(post);
+
+        return PageableExecutionUtils.getPage(postsList, pageable, countQuery::fetchOne);
+
+
+    }
+
 }
