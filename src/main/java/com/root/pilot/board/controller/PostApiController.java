@@ -70,6 +70,16 @@ public class PostApiController {
         return new ResponseEntity<>(deletedId, HttpStatus.OK);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<PostListWithPageResponseDto> getListByUserId(
+        @PathVariable Long userId, PageRequestDto pageRequestDto) {
+        PostListWithPageResponseDto responseDto =
+            postService.findPostsByUser(pageRequestDto.getPageable(), userId);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+
+    }
+
 
 
 

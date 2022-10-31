@@ -1,7 +1,6 @@
 package com.root.pilot.board.service;
 
 import com.root.pilot.board.domain.Post;
-import com.root.pilot.board.dto.PageRequestDto;
 import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.PostResponseDto;
 import com.root.pilot.board.dto.PostSaveRequestDto;
@@ -85,6 +84,20 @@ public class PostService {
             .totalCount(results.getTotalElements())
             .totalPages((long)results.getTotalPages())
             .keyword(keyword)
+            .pageable(pageable)
+            .build();
+    }
+
+    // 내가 쓴 글
+    @Transactional(readOnly = true)
+    public PostListWithPageResponseDto findPostsByUser(Pageable pageable, Long userId) {
+
+        Page<Post> result = postQueryRepository.findPostsByUser(pageable, userId);
+
+        return PostListWithPageResponseDto.builder()
+            .postsList(result.getContent())
+            .totalCount(result.getTotalElements())
+            .totalPages((long)result.getTotalPages())
             .pageable(pageable)
             .build();
     }

@@ -17,37 +17,33 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Post extends BaseEntity {
+public class Reply extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "reply_id")
     private Long id;
 
-    @Column(nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
     @Builder
-    public Post(String title, String content, User user) {
-        this.title = title;
+    public Reply(String content, User user, Post post) {
         this.content = content;
         this.user = user;
+        this.post = post;
     }
 
-    public void update(String title, String content) {
-        this.title = title;
+    public void update(String content) {
         this.content = content;
     }
 
-    // user 확인
-    public boolean validateUser(Long userId) {
-        return this.user.getId() == userId;
-    }
 }
