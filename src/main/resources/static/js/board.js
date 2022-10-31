@@ -70,4 +70,22 @@ const post = {
 
         return post;
     },
+    getPostsByUser : async function(token, userId, page) {
+        const posts = await fetch("/posts/user/" + userId + "?page=" + page, {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if(data.error) {
+                throw new Error(data.message)
+            }
+
+            return data;
+        })
+        .catch(error => alert(error));
+
+        return posts;
+    }
 }

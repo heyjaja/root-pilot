@@ -3,12 +3,11 @@ package com.root.pilot.board.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-@Builder
-@AllArgsConstructor
-@Data
+@Getter
 public class PageRequestDto {
 
     private int page;
