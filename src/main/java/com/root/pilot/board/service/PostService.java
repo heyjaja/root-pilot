@@ -7,6 +7,7 @@ import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
 import com.root.pilot.board.repository.PostQueryRepository;
 import com.root.pilot.board.repository.PostRepository;
+import com.root.pilot.board.repository.ReplyRepository;
 import com.root.pilot.user.domain.User;
 import com.root.pilot.user.repository.UserRepository;
 import javax.persistence.EntityNotFoundException;
@@ -23,6 +24,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostQueryRepository postQueryRepository;
     private final UserRepository userRepository;
+    private final ReplyRepository replyRepository;
 
     // 글쓰기
     public Long save(PostSaveRequestDto requestDto) {
@@ -52,17 +54,18 @@ public class PostService {
     }
 
     // 글삭제
-    public Long delete(Long PostId, Long userId) {
-        Post post = postRepository.findById(PostId)
+    public Long delete(Long postId, Long userId) {
+        Post post = postRepository.findById(postId)
             .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         if(!post.validateUser(userId)) {
             throw new IllegalArgumentException("본인만 삭제할 수 있습니다.");
         };
 
+        replyRepository.deleteAllByPostId(postId);
         postRepository.delete(post);
 
-        return PostId;
+        return postId;
     }
 
     // 글조회

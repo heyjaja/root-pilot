@@ -65,8 +65,6 @@ const user = {
         }).then(response => response.json())
         .catch(error => alert(error));
 
-        console.log(result);
-
         return result;
     },
     checkEmail : async function(email) {
@@ -78,8 +76,6 @@ const user = {
             body: JSON.stringify(email),
         }).then(response => response.json())
         .catch(error => alert(error));
-
-        console.log(result);
 
         return result;
     },

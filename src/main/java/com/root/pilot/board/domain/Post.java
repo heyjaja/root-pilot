@@ -2,6 +2,7 @@ package com.root.pilot.board.domain;
 
 import com.root.pilot.commons.BaseEntity;
 import com.root.pilot.user.domain.User;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
