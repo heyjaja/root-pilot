@@ -28,17 +28,30 @@
             <hr>
             <div id="content-area">
             </div>
+            <hr>
             <div id="reply-area">
-                
+                <h6>댓글</h6>
+                <div class="input-group mb-3 user-only">
+                    <input type="text" class="form-control" aria-describedby="reply-btn" id="reply-content">
+                    <button class="btn btn-outline-secondary" type="button" id="reply-btn">댓글등록</button>
+                </div>
+                <ul class="list-group list-group-flush" id="reply-body">
+                </ul>
             </div>
         </article>
     </main>
     <script th:inline="javascript">
+            const getPostId = window.location.pathname.substring(7);
+            let replyPage = 1;
+            let targetLi = null;
+            const replyBody = document.querySelector('#reply-body');
+            let loginUserId = null;
+
+            // 페이지 로드
+            loadDetailPage();
 
             async function loadDetailPage() {
-                const getPostId = window.location.pathname.substring(7);
                 const token = commons.getCookie("accessToken");
-
                 const getPost = await post.getPost(getPostId);
 
                 document.getElementById('id-area').value = getPost.postId;
@@ -51,16 +64,60 @@
 
                 if(token) {
                     const getUser = await user.getUser(token);
+                    loginUserId = getUser.userId;
                     if(getUser && (getUser.userId === getPost.userId)) {
                         document.getElementById('auth-only').classList.remove("collapse");
                     }
                 }
 
+                await loadReply(1);
+
             }
 
-            loadDetailPage();
+            // 댓글 로드
+            async function loadReply(page) {
+                if(page === 1) {
+                    replyBody.innerHTML = "";
+                    await reply.getList(getPostId, appendReply);
+                    replyPage = 1;
+                } else {
+                    await reply.getList(getPostId, appendReply, page);
+                }
+            }
 
-            // 삭제
+            // 댓글 콜백
+            function appendReply(data) {
+
+                let html = "";
+
+                data.replies.forEach((reply) => {
+                    html += '<li class="list-group-item d-flex justify-content-between align-items-start">'
+                    + '<div class="ms-2 me-auto">'
+                    + '<div><span class="fw-bold">' + reply.user + ' </span>'
+                    + '<small class="text-muted">' + reply.modifiedDate.replace("T", " ") + '</small></div>'
+                    if(loginUserId === reply.userId) {
+                        html += '<input class="form-control" type="text" value="' + reply.content + '">'
+                        + '<span class="badge bg-light rounded-pill text-dark" role="button" id="reply-update-btn">수정'
+                            + '<input type="hidden" value="' + reply.replyId + '"> </span>'
+                        + '<span class="badge bg-light rounded-pill text-dark" role="button" id="reply-delete-btn">삭제'
+                            + '<input type="hidden" value="' + reply.replyId + '"> </span>';
+                    } else {
+                        html += '<span>' + reply.content + '</span>'
+                    }
+                    html += '</div></li>';
+                })
+                const node = document.createElement("span");
+                node.classList.add('reply-page');
+                node.innerHTML = html;
+
+                replyBody.appendChild(node);
+
+                targetLi = document.querySelector('span.reply-page:last-child');
+
+                io.observe(targetLi);
+            }
+
+            // 글삭제
             const deleteBtn = document.getElementById('delete-btn');
             deleteBtn.addEventListener("click", deleteBtnEventHandler);
 
@@ -85,6 +142,69 @@
                 await post.delete(token, postId);
 
             }
+
+            // 댓글 쓰기
+            const replyBtn = document.getElementById('reply-btn');
+            replyBtn.addEventListener("click", replyBtnClickHandler);
+
+            async function replyBtnClickHandler(e) {
+                const postId = document.getElementById('id-area').value;
+                const token = commons.getCookie("accessToken");
+                const getUser = await user.getUser(token);
+
+                if(!getUser || !token) {
+                    alert("로그인이 필요합니다.");
+                    return;
+                } else if(!confirm("댓글을 등록하시겠습니까?")) {
+                    return;
+                }
+
+                const data = {
+                    content: document.getElementById('reply-content').value,
+                    userId: getUser.userId,
+                    postId: postId,
+                }
+
+                await reply.save(token, data);
+
+                await loadReply(1);
+
+            }
+
+            // 댓글 삭제
+            document.querySelector('#reply-body').addEventListener("click", replyDeleteEventHandler);
+
+            async function replyDeleteEventHandler(e) {
+                console.log(e);
+                const replyId = e.target.firstElementChild.value;
+                const token = commons.getCookie("accessToken");
+                const getUser = await user.getUser(token);
+
+                if(!getUser || !token) {
+                    alert("로그인이 필요합니다.");
+                    return;
+                }
+
+                if(e.target.id === 'reply-delete-btn') {
+                    if(confirm("댓글을 삭제하시겠습니까?")) {
+                        await reply.delete(token, replyId);
+                    }
+                } else if(e.target.id === 'reply-update-btn') {
+                    if(confirm("댓글을 수정하시겠습니까?")) {
+                        const data = {
+                            content: e.target.previousSibling.value,
+                            loginUserId: getUser.userId,
+                        }
+                        await reply.update(token, replyId, data);
+                    }
+                } else {
+                    return;
+                }
+
+
+
+            }
+
 
     </script>
 </th:block>

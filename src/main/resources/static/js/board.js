@@ -89,3 +89,93 @@ const post = {
         return posts;
     }
 }
+
+const reply = {
+    getList: async function(postId, callback, page) {
+        let url = "/reply/" + postId;
+
+        if(page) {
+            url += "?page="+page;
+        }
+
+        console.log(url);
+
+        await fetch(url, {
+            method: "GET",
+        }).then((response)=> response.json())
+        .then((data) => {
+            if(data.error) {
+                throw new Error(data.message);
+            }
+            callback(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    },
+    save: async function(token, reply) {
+        await fetch("/reply", {
+            method: "POST",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify(reply),
+        }).then((response)=> response.json())
+        .then((data) => {
+            if(data.error) {
+                throw new Error(data.message);
+            }
+            window.location.replace('/board/'+getPostId);
+        })
+        .catch((error) => alert(error));
+    },
+    delete: async function(token, replyId) {
+        await fetch("/reply/" + replyId, {
+            method: "DELETE",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
+            }
+        }).then((response)=> response.json())
+        .then((data) => {
+            if(data.error) {
+                throw new Error(data.message);
+            }
+            window.location.replace('/board/'+getPostId);
+        })
+        .catch((error) => alert(error));
+    },
+    update: async function(token, replyId, reply) {
+        await fetch("/reply/" + replyId, {
+            method: "PATCH",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify(reply),
+        }).then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                throw new Error(data.message);
+            }
+            window.location.replace('/board/' + getPostId);
+        })
+        .catch((error) => alert(error));
+    },
+}
+
+// 무한스크롤
+const io = new IntersectionObserver((entry, observer) => {
+
+    const ioTarget = entry[0].target;
+
+    if(entry[0].isIntersecting) {
+        io.unobserve(targetLi);
+        reply.getList(getPostId, appendReply, ++replyPage);
+
+
+    }
+}, {
+    threshold: 0.5
+});

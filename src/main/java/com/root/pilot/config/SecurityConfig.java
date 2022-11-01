@@ -40,7 +40,7 @@ public class SecurityConfig {
             .authorizeHttpRequests() // 접근제한 설정
                 .antMatchers("/", "/**/*.js", "/**/*.css", "/error", "/favicon.ico")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/posts/**", "/reply")
+                .antMatchers(HttpMethod.GET, "/posts/**", "/reply/**")
                 .permitAll()
                 .antMatchers("/login", "/signup", "/auth/**", "/board/**","/oauth2/**")
                 .permitAll() // 인증없이 접근 허용
