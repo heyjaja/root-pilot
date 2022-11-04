@@ -1,6 +1,5 @@
 package com.root.pilot.board.dto;
 
-import com.root.pilot.board.domain.Post;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
