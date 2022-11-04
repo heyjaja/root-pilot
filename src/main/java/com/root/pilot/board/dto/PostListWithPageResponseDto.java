@@ -23,10 +23,10 @@ public class PostListWithPageResponseDto {
 
     private List<Integer> pageList;
 
+
     @Builder
-    public PostListWithPageResponseDto(List<Post> postsList, Long totalPages, Long totalCount, Pageable pageable, String keyword) {
-        this.postsList = postsList.stream()
-            .map(post -> new PostListResponseDto(post)).collect(Collectors.toList());
+    public PostListWithPageResponseDto(List<PostListResponseDto> postsList, Long totalPages, Long totalCount, Pageable pageable, String keyword) {
+        this.postsList = postsList;
         this.totalPages = totalPages;
         this.totalCount = totalCount;
         this.keyword = keyword;

@@ -3,10 +3,9 @@ package com.root.pilot.board.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.root.pilot.board.domain.Post;
-import com.root.pilot.board.dto.PostResponseDto;
-import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
+import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
 import com.root.pilot.user.domain.User;
@@ -47,7 +46,7 @@ class PostApiControllerTest {
         String title = "title";
         String content = "content";
 
-        User user = User.builder().email("test@test.test").name("tester").password("123456")
+        User user = User.builder().email("test@test.test").name("tester").password("test11")
             .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
 
         userRepository.save(user);
@@ -110,7 +109,7 @@ class PostApiControllerTest {
     @Test
     public void TestDeletePosts() {
 
-        User user = User.builder().email("test@test.test").name("tester").password("123456")
+        User user = User.builder().email("test@test.test").name("tester").password("test11")
             .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
 
         userRepository.save(user);

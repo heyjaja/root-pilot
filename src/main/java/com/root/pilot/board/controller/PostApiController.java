@@ -6,6 +6,7 @@ import com.root.pilot.board.dto.PostResponseDto;
 import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
 import com.root.pilot.board.service.PostService;
+import com.root.pilot.commons.Timer;
 import com.root.pilot.security.dto.CustomUserDetails;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class PostApiController {
     @GetMapping
     public ResponseEntity<PostListWithPageResponseDto> getList(PageRequestDto pageRequestDto) {
         PostListWithPageResponseDto responseDto =
-            postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+            postService.getDtoListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -70,6 +71,7 @@ public class PostApiController {
         return new ResponseEntity<>(deletedId, HttpStatus.OK);
     }
 
+    @Timer
     @GetMapping("/user/{userId}")
     public ResponseEntity<PostListWithPageResponseDto> getListByUserId(
         @PathVariable Long userId, PageRequestDto pageRequestDto) {

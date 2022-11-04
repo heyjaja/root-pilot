@@ -1,6 +1,7 @@
 package com.root.pilot.board.service;
 
 import com.root.pilot.board.domain.Post;
+import com.root.pilot.board.dto.PostListResponseDto;
 import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.PostResponseDto;
 import com.root.pilot.board.dto.PostSaveRequestDto;
@@ -10,6 +11,8 @@ import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.board.repository.ReplyRepository;
 import com.root.pilot.user.domain.User;
 import com.root.pilot.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -81,6 +84,20 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostListWithPageResponseDto getListWithPaging(Pageable pageable, String keyword) {
         Page<Post> results = postQueryRepository.getPostsList(pageable, keyword);
+        List<PostListResponseDto> postsList = getPostListResponseDtoList(
+            results);
+
+        return PostListWithPageResponseDto.builder()
+            .postsList(postsList)
+            .totalCount(results.getTotalElements())
+            .totalPages((long)results.getTotalPages())
+            .keyword(keyword)
+            .pageable(pageable)
+            .build();
+    }
+    @Transactional(readOnly = true)
+    public PostListWithPageResponseDto getDtoListWithPaging(Pageable pageable, String keyword) {
+        Page<PostListResponseDto> results = postQueryRepository.getPostsDtoList(pageable, keyword);
 
         return PostListWithPageResponseDto.builder()
             .postsList(results.getContent())
@@ -96,13 +113,22 @@ public class PostService {
     public PostListWithPageResponseDto findPostsByUser(Pageable pageable, Long userId) {
 
         Page<Post> result = postQueryRepository.findPostsByUser(pageable, userId);
+        List<PostListResponseDto> postsList = getPostListResponseDtoList(
+            result);
 
         return PostListWithPageResponseDto.builder()
-            .postsList(result.getContent())
+            .postsList(postsList)
             .totalCount(result.getTotalElements())
             .totalPages((long)result.getTotalPages())
             .pageable(pageable)
             .build();
+    }
+
+    private static List<PostListResponseDto> getPostListResponseDtoList(Page<Post> result) {
+        List<PostListResponseDto> postsList = result.getContent().stream()
+            .map(post -> new PostListResponseDto(post)).collect(
+                Collectors.toList());
+        return postsList;
     }
 
 }

@@ -98,8 +98,6 @@ const reply = {
             url += "?page="+page;
         }
 
-        console.log(url);
-
         await fetch(url, {
             method: "GET",
         }).then((response)=> response.json())
@@ -114,7 +112,7 @@ const reply = {
         });
     },
     save: async function(token, reply) {
-        await fetch("/reply", {
+        const result = await fetch("/reply", {
             method: "POST",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
@@ -126,12 +124,14 @@ const reply = {
             if(data.error) {
                 throw new Error(data.message);
             }
-            window.location.replace('/board/'+getPostId);
+            return data;
         })
         .catch((error) => alert(error));
+
+        return result;
     },
     delete: async function(token, replyId) {
-        await fetch("/reply/" + replyId, {
+        const result = await fetch("/reply/" + replyId, {
             method: "DELETE",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
@@ -142,12 +142,14 @@ const reply = {
             if(data.error) {
                 throw new Error(data.message);
             }
-            window.location.replace('/board/'+getPostId);
+            return data;
         })
         .catch((error) => alert(error));
+
+        return result;
     },
     update: async function(token, replyId, reply) {
-        await fetch("/reply/" + replyId, {
+        const result = await fetch("/reply/" + replyId, {
             method: "PATCH",
             headers: {
                 'content-type': 'application/json; charset=utf-8',
@@ -159,9 +161,11 @@ const reply = {
             if (data.error) {
                 throw new Error(data.message);
             }
-            window.location.replace('/board/' + getPostId);
+            return data;
         })
         .catch((error) => alert(error));
+
+        return result;
     },
 }
 

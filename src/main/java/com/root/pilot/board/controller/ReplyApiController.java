@@ -5,6 +5,7 @@ import com.root.pilot.board.dto.reply.ReplyListResponseDto;
 import com.root.pilot.board.dto.reply.ReplySaveRequestDto;
 import com.root.pilot.board.dto.reply.ReplyUpdateRequestDto;
 import com.root.pilot.board.service.ReplyService;
+import com.root.pilot.commons.Timer;
 import com.root.pilot.security.dto.CustomUserDetails;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class ReplyApiController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Long> update(
-        @PathVariable Long id, @RequestBody ReplyUpdateRequestDto requestDto) {
+        @PathVariable Long id, @Valid @RequestBody ReplyUpdateRequestDto requestDto) {
         Long updatedId = replyService.update(id, requestDto);
 
         return new ResponseEntity<>(updatedId, HttpStatus.OK);
@@ -52,6 +53,7 @@ public class ReplyApiController {
 
     }
 
+    @Timer
     @GetMapping("/{postId}")
     public ResponseEntity<ReplyListResponseDto> getList(
         @PathVariable Long postId, PageRequestDto pageRequestDto) {
