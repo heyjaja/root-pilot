@@ -11,9 +11,8 @@
             <header>
                 <h1 class="mb-2" id="title-area"></h1>
                 <div class="mb-1">
-                    <span class="text-muted fs-sm" id="user-area"></span>
-                    <span class="text-muted fs-sm"> | </span>
-                    <span class="text-muted fs-sm" id="date-area"></span>
+                    <span class="fw-bold" id="user-area"></span>
+                    <small class="text-muted" id="date-area"></small>
                 </div>
                 <div class="mb-1 collapse" id="auth-only">
                     <form>
@@ -32,8 +31,8 @@
             <div id="reply-area">
                 <h6>댓글</h6>
                 <div class="input-group mb-3 user-only">
-                    <input type="text" class="form-control" aria-describedby="reply-btn" id="reply-content">
-                    <button class="btn btn-outline-secondary" type="button" id="reply-btn">댓글등록</button>
+                    <textarea class="form-control" placeholder="255자 이내로 등록 가능합니다." aria-describedby="reply-btn" id="reply-content"></textarea>
+                    <button class="btn btn-outline-primary" type="button" id="reply-btn">등록</button>
                 </div>
                 <ul class="list-group list-group-flush" id="reply-body">
                 </ul>
@@ -88,21 +87,27 @@
             // 댓글 콜백
             function appendReply(data) {
 
+                const replies = data.replies;
+
+                if(!replies || replies.length === 0) {
+                    return;
+                }
+
                 let html = "";
 
                 data.replies.forEach((reply) => {
-                    html += '<li class="list-group-item d-flex justify-content-between align-items-start">'
+                    html += '<li class="list-group-item justify-content-between align-items-start">'
                     + '<div class="ms-2 me-auto">'
                     + '<div><span class="fw-bold">' + reply.user + ' </span>'
                     + '<small class="text-muted">' + reply.modifiedDate.replace("T", " ") + '</small></div>'
+                    + '<span>' + reply.content + ' </span>'
                     if(loginUserId === reply.userId) {
-                        html += '<input class="form-control" type="text" value="' + reply.content + '">'
-                        + '<span class="badge bg-light rounded-pill text-dark" role="button" id="reply-update-btn">수정'
-                            + '<input type="hidden" value="' + reply.replyId + '"> </span>'
+                        html += '<textarea class="form-control collapse" id="reply-update-form">' + reply.content + '</textarea>'
+                        + '<span class="badge bg-light rounded-pill text-dark" role="button" id="reply-update-form-btn">수정'
+                        + '<input type="hidden" value="' + reply.replyId + '"></span>'
+                        +'<span class="badge bg-secondary rounded-pill collapse" role="button" id="reply-cancel-form-btn">취소</span>'
                         + '<span class="badge bg-light rounded-pill text-dark" role="button" id="reply-delete-btn">삭제'
-                            + '<input type="hidden" value="' + reply.replyId + '"> </span>';
-                    } else {
-                        html += '<span>' + reply.content + '</span>'
+                        + '<input type="hidden" value="' + reply.replyId + '"> </span>';
                     }
                     html += '</div></li>';
                 })
@@ -115,6 +120,9 @@
                 targetLi = document.querySelector('span.reply-page:last-child');
 
                 io.observe(targetLi);
+
+                document.querySelectorAll('span.badge')
+                .forEach((badge) => badge.addEventListener("click", replyDeleteEventHandler));
             }
 
             // 글삭제
@@ -152,31 +160,38 @@
                 const token = commons.getCookie("accessToken");
                 const getUser = await user.getUser(token);
 
+                let replyContent = document.getElementById('reply-content');
+
                 if(!getUser || !token) {
                     alert("로그인이 필요합니다.");
+                    return;
+                } else if(replyContent.value.length > 255) {
+                    alert("255자 이내로 등록 가능합니다.")
                     return;
                 } else if(!confirm("댓글을 등록하시겠습니까?")) {
                     return;
                 }
 
                 const data = {
-                    content: document.getElementById('reply-content').value,
+                    content: replyContent.value,
                     userId: getUser.userId,
                     postId: postId,
                 }
 
-                await reply.save(token, data);
-
-                await loadReply(1);
+                const result = await reply.save(token, data);
+                if(result) {
+                    replyContent.value = "";
+                    await loadReply(1);
+                }
 
             }
 
-            // 댓글 삭제
-            document.querySelector('#reply-body').addEventListener("click", replyDeleteEventHandler);
-
+            // 댓글 수정/삭제
             async function replyDeleteEventHandler(e) {
-                console.log(e);
-                const replyId = e.target.firstElementChild.value;
+                let replyId;
+                if(e.target.firstElementChild) {
+                    replyId = e.target.firstElementChild.value;
+                }
                 const token = commons.getCookie("accessToken");
                 const getUser = await user.getUser(token);
 
@@ -187,23 +202,43 @@
 
                 if(e.target.id === 'reply-delete-btn') {
                     if(confirm("댓글을 삭제하시겠습니까?")) {
-                        await reply.delete(token, replyId);
+                        const result = await reply.delete(token, replyId);
+                        if(result) {
+                            e.target.parentElement.parentElement.remove();
+                        }
                     }
                 } else if(e.target.id === 'reply-update-btn') {
+                    const content = e.target.previousSibling.value;
                     if(confirm("댓글을 수정하시겠습니까?")) {
                         const data = {
-                            content: e.target.previousSibling.value,
+                            content: content,
                             loginUserId: getUser.userId,
                         }
-                        await reply.update(token, replyId, data);
+                        const result = await reply.update(token, replyId, data);
+                        if(result) {
+                            e.target.previousSibling.previousSibling.innerText = content;
+                            e.target.previousSibling.classList.add("collapse");
+                            e.target.nextSibling.classList.add("collapse");
+                            e.target.setAttribute("id", "reply-update-form-btn");
+                        }
                     }
-                } else {
+                } else if(e.target.id === 'reply-update-form-btn') {
+                    e.target.previousSibling.classList.remove("collapse");
+                    e.target.nextSibling.classList.remove("collapse");
+                    e.target.setAttribute("id", "reply-update-btn");
+                    return;
+                } else if(e.target.id === 'reply-cancel-form-btn') {
+                    e.target.previousSibling.previousSibling.classList.add("collapse");
+                    e.target.classList.add("collapse");
+                    e.target.previousSibling.setAttribute("id", "reply-update-form-btn");
                     return;
                 }
 
 
 
             }
+
+
 
 
     </script>

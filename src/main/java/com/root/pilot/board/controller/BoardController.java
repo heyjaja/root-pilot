@@ -3,6 +3,7 @@ package com.root.pilot.board.controller;
 import com.root.pilot.board.dto.PageRequestDto;
 import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.service.PostService;
+import com.root.pilot.commons.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class BoardController {
     private final PostService postService;
 
+    @Timer
     @GetMapping
     public String getList(Model model, PageRequestDto pageRequestDto) {
 
         PostListWithPageResponseDto responseDto =
-            postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+            //postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+            postService.getDtoListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
         model.addAttribute("posts", responseDto);
 
         return "board/list";

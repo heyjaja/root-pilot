@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
@@ -35,10 +36,6 @@ class PostServiceTest {
         //given
         String title = "test title";
         String content = "test content";
-        User user = User.builder().email("test@test.test").name("tester").password("123456")
-            .role(Role.ROLE_USER).authProvider(AuthProvider.local).build();
-
-        userRepository.save(user);
 
         //when
         Long id = postService.save(PostSaveRequestDto.builder()
@@ -47,15 +44,14 @@ class PostServiceTest {
             .userId(1L)
             .build());
 
-
-
         //then
         PostResponseDto post = postService.findById(id);
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getContent()).isEqualTo(content);
-        assertThat(post.getId().equals(id));
+        assertThat(post.getPostId().equals(id));
 
     }
+
 
 
 }
