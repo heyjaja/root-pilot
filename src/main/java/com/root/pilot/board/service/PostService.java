@@ -83,6 +83,7 @@ public class PostService {
     // 글목록 페이징
     @Transactional(readOnly = true)
     public PostListWithPageResponseDto getListWithPaging(Pageable pageable, String keyword) {
+
         Page<Post> results = postQueryRepository.getPostsList(pageable, keyword);
         List<PostListResponseDto> postsList = getPostListResponseDtoList(
             results);
@@ -95,6 +96,19 @@ public class PostService {
             .pageable(pageable)
             .build();
     }
+    @Transactional(readOnly = true)
+    public PostListWithPageResponseDto getListMysqlWithPaging(Pageable pageable, String keyword) {
+        Page<Post> results = postQueryRepository.getPostsMysqlList(pageable, keyword);
+
+        return PostListWithPageResponseDto.builder()
+            .postsList(getPostListResponseDtoList(results))
+            .totalCount(results.getTotalElements())
+            .totalPages((long)results.getTotalPages())
+            .keyword(keyword)
+            .pageable(pageable)
+            .build();
+    }
+
     @Transactional(readOnly = true)
     public PostListWithPageResponseDto getDtoListWithPaging(Pageable pageable, String keyword) {
         Page<PostListResponseDto> results = postQueryRepository.getPostsDtoList(pageable, keyword);

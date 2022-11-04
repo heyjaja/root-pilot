@@ -25,6 +25,7 @@ public class BoardController {
         PostListWithPageResponseDto responseDto =
             //postService.getListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
             postService.getDtoListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+            //postService.getListMysqlWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
         model.addAttribute("posts", responseDto);
 
         return "board/list";
