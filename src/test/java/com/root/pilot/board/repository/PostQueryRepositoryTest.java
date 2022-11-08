@@ -1,7 +1,5 @@
 package com.root.pilot.board.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,11 @@ class PostQueryRepositoryTest {
     private PostQueryRepository postQueryRepository;
 
     @Test
-    public void TestGetPostsMySql() {
+    public void TestGetPostsDtoList() {
+    }
 
+    @Test
+    public void TestToIdsQuery() {
+        postQueryRepository.toPostIds(1L, 10, null);
     }
 }

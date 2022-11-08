@@ -5,6 +5,7 @@ import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.PostResponseDto;
 import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
+import com.root.pilot.board.service.PostQueryService;
 import com.root.pilot.board.service.PostService;
 import com.root.pilot.commons.Timer;
 import com.root.pilot.security.dto.CustomUserDetails;
@@ -28,11 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostApiController {
 
     private final PostService postService;
+    private final PostQueryService postQueryService;
 
     @GetMapping
     public ResponseEntity<PostListWithPageResponseDto> getList(PageRequestDto pageRequestDto) {
         PostListWithPageResponseDto responseDto =
-            postService.getDtoListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
+            postQueryService.getDtoListWithPaging(pageRequestDto.getPageable(), pageRequestDto.getKeyword());
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -70,22 +72,6 @@ public class PostApiController {
 
         return new ResponseEntity<>(deletedId, HttpStatus.OK);
     }
-
-    @Timer
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<PostListWithPageResponseDto> getListByUserId(
-        @PathVariable Long userId, PageRequestDto pageRequestDto) {
-        PostListWithPageResponseDto responseDto =
-            postService.findPostsByUser(pageRequestDto.getPageable(), userId);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
-
-    }
-
-
-
-
-
 
 
 }

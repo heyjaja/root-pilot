@@ -33,20 +33,38 @@ class ReplyRepositoryTest {
 
         Optional<User> user1 = userRepository.findById(1L);
         Optional<User> user2 = userRepository.findById(2L);
+        Optional<User> user3 = userRepository.findById(3L);
+        Optional<User> user4 = userRepository.findById(4L);
+        Optional<User> user5 = userRepository.findById(5L);
 
-        Post post = Post.builder().title("댓글 달아주세요.").content("테스트 내용").user(user1.get()).build();
+        Post post = Post.builder().title("reply please").content("댓글 테스트합니다<br>많이 달아주세요").user(user1.get()).build();
 
         postRepository.save(post);
 
         for(int i=1; i<=50; i++) {
             replyRepository.save(Reply.builder()
-                .content("reply content " + i)
+                .content("일요일 좋아 " + i)
                 .user(user1.get())
                 .post(post)
                 .build());
             replyRepository.save(Reply.builder()
-                .content("댓글 테스트 " + i)
+                .content("토요일 좋아 " + i)
                 .user(user2.get())
+                .post(post)
+                .build());
+            replyRepository.save(Reply.builder()
+                .content("목요일 좋아 " + i)
+                .user(user3.get())
+                .post(post)
+                .build());
+            replyRepository.save(Reply.builder()
+                .content("금요일 좋아 " + i)
+                .user(user4.get())
+                .post(post)
+                .build());
+            replyRepository.save(Reply.builder()
+                .content("토요일 좋아 " + i)
+                .user(user5.get())
                 .post(post)
                 .build());
         }
