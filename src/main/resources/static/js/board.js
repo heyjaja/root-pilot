@@ -71,7 +71,34 @@ const post = {
         return post;
     },
     getPostsByUser : async function(token, userId, page) {
-        const posts = await fetch("/posts/user/" + userId + "?page=" + page, {
+        const posts = await fetch("/userpost/" + userId + "?page=" + page, {
+            method: "GET",
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            }
+        }).then(response => response.json())
+        .then(data => {
+            if(data.error) {
+                throw new Error(data.message)
+            }
+
+            return data;
+        })
+        .catch(error => alert(error));
+
+        return posts;
+    },
+    getPostsByUserNext : async function(token, userId, postId, keyword) {
+        let url = "/userpost/" + userId;
+        if(postId && keyword) {
+            url += "?postId="+postId + "&keyword="+keyword;
+        } else if(postId) {
+            url += "?postId="+postId;
+        } else if(keyword) {
+            url += "?keyword="+keyword;
+        }
+
+        const posts = await fetch(url, {
             method: "GET",
             headers: {
                 'Authorization': 'Bearer ' + token,
