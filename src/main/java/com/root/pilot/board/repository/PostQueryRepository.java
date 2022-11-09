@@ -11,7 +11,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.root.pilot.board.domain.Post;
 import com.root.pilot.board.dto.PostListResponseDto;
 import com.root.pilot.board.dto.QPostListResponseDto;
-import com.root.pilot.commons.Timer;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 @Repository
-public class PostQueryRepository {
+public class  PostQueryRepository {
 
     private final EntityManager em;
     private final JPAQueryFactory query;
@@ -55,7 +54,6 @@ public class PostQueryRepository {
 
     }
 
-    @Timer
     public Page<PostListResponseDto> getPostsDtoList(Pageable pageable, String keyword) {
 
         BooleanBuilder builder = getBooleanBuilder(keyword);
@@ -119,7 +117,7 @@ public class PostQueryRepository {
             builder.and(post.id.lt(postId));
         }
 
-        builder.and(post.user.id.eq(userId)).and(getLikeBuilder(keyword));
+        builder.and(post.user.id.eq(userId)).and(getBooleanBuilder(keyword));
 
         List<PostListResponseDto> posts = query
                 .select(new QPostListResponseDto(

@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class TokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+    private final CustomUserDetailsService userDetailsService;
 
 
     @Override
@@ -32,7 +33,7 @@ public class TokenFilter extends OncePerRequestFilter {
             String jwt = tokenService.parseTokenByRequest(request);
 
             if(StringUtils.hasText(jwt) && tokenService.validateToken(jwt)) {
-                CustomUserDetails userDetails = tokenService.getUserDetailsByToken(jwt);
+                CustomUserDetails userDetails = userDetailsService.loadUserByToken(jwt);
 
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null,

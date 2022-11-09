@@ -1,7 +1,6 @@
 package com.root.pilot.board.controller;
 
 import com.root.pilot.board.dto.PageRequestDto;
-import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.UserPostsResponseDto;
 import com.root.pilot.board.service.PostQueryService;
 import com.root.pilot.commons.Timer;
@@ -13,13 +12,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/userpost")
-public class PostUserApiController {
+public class UserPostApiController {
 
     private final PostQueryService postQueryService;
 

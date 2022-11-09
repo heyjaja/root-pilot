@@ -12,3 +12,4 @@ gen
 .idea
 build
 src/main/generated
+$buildDir

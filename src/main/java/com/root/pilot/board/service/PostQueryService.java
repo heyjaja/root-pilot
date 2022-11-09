@@ -1,7 +1,6 @@
 package com.root.pilot.board.service;
 
 import com.root.pilot.board.domain.Post;
-import com.root.pilot.board.dto.PageRequestDto;
 import com.root.pilot.board.dto.PostListResponseDto;
 import com.root.pilot.board.dto.PostListWithPageResponseDto;
 import com.root.pilot.board.dto.UserPostsResponseDto;
@@ -84,7 +83,7 @@ public class PostQueryService {
         List<PostListResponseDto> postsList = result.getContent();
 
         if(postsList.size() == 0) {
-            throw new IllegalArgumentException("검색 결과가 존재하지 않습니다.");
+            throw new IllegalArgumentException("게시글이 존재하지 않습니다.");
         }
 
         return UserPostsResponseDto.builder()

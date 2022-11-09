@@ -1,5 +1,6 @@
 package com.root.pilot.security.dto;
 
+import com.root.pilot.commons.RandomStringUtils;
 import com.root.pilot.user.domain.AuthProvider;
 import com.root.pilot.user.domain.Role;
 import com.root.pilot.user.domain.User;
@@ -41,7 +42,7 @@ public class OAuthAttributes {
 
     public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
-                .name((String)attributes.get("name"))
+                .name(RandomStringUtils.random(10))
                 .email((String)attributes.get("email"))
                 .picture((String)attributes.get("picture"))
                 .attributes(attributes)
@@ -55,7 +56,7 @@ public class OAuthAttributes {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
         return OAuthAttributes.builder()
-                .name((String) response.get("name"))
+                .name(RandomStringUtils.random(10))
                 .email((String) response.get("email"))
                 .picture((String) response.get("profile_image"))
                 .attributes(response)

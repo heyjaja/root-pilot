@@ -45,7 +45,7 @@ public class BoardController {
         return "board/posts-update";
     }
 
-    @GetMapping("/mypage")
-    public String myPage() { return "/mypage"; }
+    @GetMapping("/mypost")
+    public String myPost() { return "/board/mypost"; }
 
 }

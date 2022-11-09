@@ -50,9 +50,7 @@
                 </div>
 
                 <div class="mb-4"></div>
-                <button class="w-100 btn btn-primary btn-lg btn-block" type="button"
-                        id="signup-btn">가입 완료
-                </button>
+                <button class="w-100 btn btn-primary btn-lg btn-block" type="button" id="signup-btn">가입 완료</button>
             </form>
         </div>
     </main>
@@ -72,7 +70,7 @@
 
             const result = await user.checkName(name);
             nameAlert.innerText = result.message;
-            showAlert(nameAlert);
+            showElement(nameAlert);
 
         });
         document.getElementById('check-email-btn').addEventListener("click", async function() {
@@ -81,7 +79,7 @@
             }
             const result = await user.checkEmail(email);
             emailAlert.innerText = result.message;
-            showAlert(emailAlert);
+            showElement(emailAlert);
         });
 
         const inputs = document.querySelectorAll('.form-control');
@@ -107,37 +105,37 @@
 
             if (!inputName || !regName.test(inputName)) {
                 nameAlert.innerText = "이름은 2~20자 한글과 영문, 숫자만 가능합니다.";
-                showAlert(nameAlert);
+                showElement(nameAlert);
                 return;
             } else {
-                hideAlert(nameAlert);
+                hideElement(nameAlert);
             }
 
             if (!inputEmail || !regEmail.test(inputEmail)) {
                 emailAlert.innerText = "올바른 이메일 형식이 아닙니다.";
-                showAlert(emailAlert);
+                showElement(emailAlert);
                 return;
             } else {
-                hideAlert(emailAlert);
+                hideElement(emailAlert);
             }
 
             if (!inputPassword || 6 > inputPassword.length || inputPassword.length > 20) {
-                showAlert(passwordAlert);
+                showElement(passwordAlert);
                 return;
             } else {
-                hideAlert(passwordAlert);
+                hideElement(passwordAlert);
             }
 
             if (!inputPassword2) {
                 password2Alert.innerText = "비밀번호를 확인해주세요."
-                showAlert(password2Alert);
+                showElement(password2Alert);
                 return;
             } else if (inputPassword != inputPassword2) {
                 password2Alert.innerText = "비밀번호가 일치하지 않습니다."
-                showAlert(password2Alert);
+                showElement(password2Alert);
                 return;
             } else {
-                hideAlert(password2Alert);
+                hideElement(password2Alert);
             }
         }
 
@@ -147,14 +145,6 @@
 
             const data = commons.getFormData("signup-form");
             await user.save(data);
-        }
-
-        function hideAlert(alert) {
-            alert.classList.add("collapse");
-        }
-
-        function showAlert(alert) {
-            alert.classList.remove("collapse");
         }
     </script>
 </th:block>

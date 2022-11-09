@@ -7,7 +7,6 @@ import com.root.pilot.board.dto.PostSaveRequestDto;
 import com.root.pilot.board.dto.PostUpdateRequestDto;
 import com.root.pilot.board.service.PostQueryService;
 import com.root.pilot.board.service.PostService;
-import com.root.pilot.commons.Timer;
 import com.root.pilot.security.dto.CustomUserDetails;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;

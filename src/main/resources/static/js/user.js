@@ -21,6 +21,28 @@ const user = {
         return result;
     },
 
+    update : async function(token, user) {
+        if(!confirm("회원 정보를 수정하시겠습니까?")) {
+            return;
+        }
+
+        const result = await fetch("/user/" + user.userId, {
+            method: "PATCH",
+            headers: {
+                'content-type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify(user),
+        }).then((response) => response.json())
+        .then((data) => {
+            if(data.error) throw new Error(data.message);
+            return data;
+        })
+        .catch((error) => alert(error));
+
+        return result;
+    },
+
     login : async function(user) {
         const token = await fetch("/auth/signin", {
             method: "POST",

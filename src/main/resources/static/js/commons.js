@@ -20,4 +20,23 @@ const commons = {
 
         document.cookie=cookieValue;
     },
+    displayTime : function(time) {
+        const date = new Date(time);
+        const yy = date.getFullYear();
+        const mon = date.getMonth()+1;
+        const dd = date.getDay();
+        const hh = date.getHours();
+        const mm = date.getMinutes();
+
+        return yy + "-" + mon + "-"+ (dd < 10 ? "0" + dd : dd) + " "+ hh + ":" + mm;
+    }
+}
+
+
+function hideElement(element) {
+    element.classList.add("collapse");
+}
+
+function showElement(element) {
+    element.classList.remove("collapse");
 }
