@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final TokenService tokenService;
 
 
     public CustomUserDetails create(User user) {
@@ -42,6 +43,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             () -> new UsernameNotFoundException("User not Found " + id));
 
         return create(user);
+    }
+
+    public CustomUserDetails loadUserByToken(String token) {
+        CustomUserDetails getUser = tokenService.getUserDetailsByToken(token);
+
+        return loadUserById(getUser.getId());
     }
 
 }

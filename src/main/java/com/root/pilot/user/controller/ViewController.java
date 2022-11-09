@@ -16,4 +16,7 @@ public class ViewController {
         return "login";
     }
 
+    @GetMapping("/mypage")
+    public String myPage() { return "/mypage"; }
+
 }

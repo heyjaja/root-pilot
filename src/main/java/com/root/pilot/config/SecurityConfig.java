@@ -1,6 +1,7 @@
 package com.root.pilot.config;
 
 import com.root.pilot.filter.TokenFilter;
+import com.root.pilot.security.handler.OAuth2LoginSuccessHandler;
 import com.root.pilot.security.service.CustomOAuth2UserService;
 import com.root.pilot.security.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity // 기본적인 웹 보안 설정
 public class SecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final TokenFilter tokenFilter;
 
@@ -30,7 +31,7 @@ public class SecurityConfig {
             .csrf().disable()
             .formLogin().disable()
             .logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/board")
+                .logoutSuccessUrl("/login")
                 .deleteCookies("accessToken")
             .and()
             .httpBasic().disable()
@@ -42,7 +43,7 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/posts/**", "/reply/**")
                 .permitAll()
-                .antMatchers("/login", "/signup", "/auth/**", "/board/**","/oauth2/**")
+                .antMatchers("/login", "/signup", "/auth/**", "/board/**","/oauth2/**", "/mypage")
                 .permitAll() // 인증없이 접근 허용
                 .antMatchers("/posts/user/**")
                 .authenticated()
@@ -51,7 +52,9 @@ public class SecurityConfig {
             .oauth2Login()
                 .loginPage("/login")
                 .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .userService(customOAuth2UserService)
+                    .and()
+                        .successHandler(oAuth2LoginSuccessHandler);
 
 
         http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,5 +1,6 @@
 package com.root.pilot.security.service;
 
+import com.root.pilot.security.dto.CustomUserDetails;
 import com.root.pilot.security.dto.OAuthAttributes;
 import com.root.pilot.exception.OAuth2AuthenticationProcessingException;
 import com.root.pilot.user.domain.AuthProvider;
@@ -45,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
         if(!StringUtils.hasText(attributes.getEmail())) {
-            throw new RuntimeException("Email not found from OAuth2 provider");
+            throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
         Optional<User> userOptional = userRepository.findByEmail(attributes.getEmail());
@@ -62,11 +63,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         user = saveOrUpdate(attributes);
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(
-                        user.getRoleForToString())),
-                attributes.getAttributes(),
-                attributes.getNameAttributeKey());
+        return CustomUserDetails.builder()
+            .id(user.getId())
+            .email(user.getEmail())
+            .name(user.getName())
+            .role(user.getRole())
+            .authProvider(user.getAuthProvider())
+            .build();
 
     }
 

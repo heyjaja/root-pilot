@@ -1,6 +1,7 @@
 package com.root.pilot.exception.handler;
 
 import com.root.pilot.exception.ErrorDetails;
+import com.root.pilot.exception.OAuth2AuthenticationProcessingException;
 import com.root.pilot.exception.TokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,14 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
             "user not found", ex.getMessage(), request.getDescription(false));
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(OAuth2AuthenticationProcessingException.class)
+    public final ResponseEntity<ErrorDetails> handleOAuth2AuthenticationProcessingException(OAuth2AuthenticationProcessingException ex,
+        WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(
+            "user not found", ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }

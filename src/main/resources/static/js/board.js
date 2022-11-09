@@ -12,7 +12,7 @@ const post = {
             if(data.error) {
                 throw new Error(data.message);
             }
-            window.location.replace('/board');
+            window.location.replace('/');
         })
         .catch((error) => alert(error));
     },
@@ -47,7 +47,6 @@ const post = {
             if(data.error) {
                 throw new Error(data.message);
             }
-            window.location.replace('/board/');
         })
         .catch((error) => alert(error));
     },
