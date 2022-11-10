@@ -46,6 +46,6 @@ public class BoardController {
     }
 
     @GetMapping("/mypost")
-    public String myPost() { return "/board/mypost"; }
+    public String myPost() { return "board/mypost"; }
 
 }
