@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @NoArgsConstructor
 @Slf4j
-public class UpdateUserRequestDto {
+public class  UpdateUserRequestDto {
 
     private Long userId;
     @NotBlank(message = "이름을 입력해주세요.")
