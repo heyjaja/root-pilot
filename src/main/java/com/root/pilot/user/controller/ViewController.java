@@ -17,6 +17,6 @@ public class ViewController {
     }
 
     @GetMapping("/mypage")
-    public String myPage() { return "/mypage"; }
+    public String myPage() { return "mypage"; }
 
 }
