@@ -28,7 +28,6 @@ class ReplyRepositoryTest {
     private PostRepository postRepository;
 
     @Test
-    @Rollback(value = false)
     public void initDb() {
 
         Optional<User> user1 = userRepository.findById(1L);
