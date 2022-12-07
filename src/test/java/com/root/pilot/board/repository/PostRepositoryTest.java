@@ -26,7 +26,6 @@ class PostRepositoryTest {
     UserRepository userRepository;
 
     @Test
-    @Rollback(value = false)
     public void TestSavePostAndGetList() {
         //given
         String title = "test title";
@@ -46,7 +45,6 @@ class PostRepositoryTest {
     }
 
     @Test
-    @Rollback(value = false)
     @Transactional
     public void initDb() {
 
