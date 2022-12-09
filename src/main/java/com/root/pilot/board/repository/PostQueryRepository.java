@@ -56,8 +56,8 @@ public class  PostQueryRepository {
 
     public Page<PostListResponseDto> getPostsDtoList(Pageable pageable, String keyword) {
 
-        BooleanBuilder builder = getBooleanBuilder(keyword);
-        //BooleanBuilder builder = getLikeBuilder(keyword);
+//        BooleanBuilder builder = getBooleanBuilder(keyword);
+        BooleanBuilder builder = getLikeBuilder(keyword);
 
         List<Long> ids = toPostIds(pageable.getOffset(), pageable.getPageSize(), builder);
 
@@ -117,7 +117,7 @@ public class  PostQueryRepository {
             builder.and(post.id.lt(postId));
         }
 
-        builder.and(post.user.id.eq(userId)).and(getBooleanBuilder(keyword));
+        builder.and(post.user.id.eq(userId)).and(getLikeBuilder(keyword));
 
         List<PostListResponseDto> posts = query
                 .select(new QPostListResponseDto(
