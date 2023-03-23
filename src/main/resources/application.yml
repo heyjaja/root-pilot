@@ -5,6 +5,9 @@ spring:
       "dev": "dev"
     include: oauth
 
+server:
+  port: 9991
+
 ---
 
 spring:
