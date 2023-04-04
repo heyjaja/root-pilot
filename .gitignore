@@ -6,10 +6,10 @@
 *.iml
 out
 gen
+.yml
 
 # Java
 .gradle
-.idea
 build
 src/main/generated
 $buildDir
