@@ -28,3 +28,4 @@
 - 수동 배포 및 Jenkins를 통한 배포  
 
 ## 구현 내용
+Link(https://docs.google.com/document/d/1E92wh2-qwsPuZUrolDm2FHzRWzz6I7IiFKD3GvOpOlY/edit?usp=sharing)
