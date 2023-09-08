@@ -6,7 +6,7 @@
 *.iml
 out
 gen
-.yml
+*.yml
 
 # Java
 .gradle

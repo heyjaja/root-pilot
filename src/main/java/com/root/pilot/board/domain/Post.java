@@ -2,21 +2,17 @@ package com.root.pilot.board.domain;
 
 import com.root.pilot.commons.BaseEntity;
 import com.root.pilot.user.domain.User;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Post extends BaseEntity {
 
@@ -35,13 +31,6 @@ public class Post extends BaseEntity {
     @JoinColumn(name="user_id")
     private User user;
 
-    @Builder
-    public Post(String title, String content, User user) {
-        this.title = title;
-        this.content = content;
-        this.user = user;
-    }
-
     public void update(String title, String content) {
         this.title = title;
         this.content = content;
@@ -49,6 +38,6 @@ public class Post extends BaseEntity {
 
     // user 확인
     public boolean validateUser(Long userId) {
-        return this.user.getId() == userId;
+        return this.user.getId().equals(userId);
     }
 }
