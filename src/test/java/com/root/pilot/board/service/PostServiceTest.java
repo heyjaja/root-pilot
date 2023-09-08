@@ -39,7 +39,7 @@ class PostServiceTest {
         PostResponseDto post = postService.findById(id);
         assertThat(post.getTitle()).isEqualTo(title);
         assertThat(post.getContent()).isEqualTo(content);
-        assertThat(post.getPostId().equals(id));
+        assertThat(post.getPostId()).isEqualTo(id);
 
     }
 

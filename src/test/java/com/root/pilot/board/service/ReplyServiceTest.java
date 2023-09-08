@@ -82,12 +82,9 @@ class ReplyServiceTest {
         when(userRepository.findById(id)).thenReturn(Optional.ofNullable(user));
         when(postRepository.findById(id)).thenReturn(Optional.ofNullable(post));
 
-        replyService.save(requestDto);
+        Long saved = replyService.save(requestDto);
 
-        assertThat(reply.getId()).isEqualTo(id);
-        assertThat(reply.getContent()).isEqualTo(content);
-        assertThat(reply.getUser().getName()).isEqualTo(username);
-        assertThat(reply.getPost().getTitle()).isEqualTo(postTitle);
+        assertThat(saved).isEqualTo(id);
     }
 
 }
