@@ -1,24 +1,15 @@
 package com.root.pilot.board.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.root.pilot.board.domain.Post;
 import com.root.pilot.board.dto.PostResponseDto;
-import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.board.dto.PostSaveRequestDto;
-import com.root.pilot.user.domain.AuthProvider;
-import com.root.pilot.user.domain.Role;
-import com.root.pilot.user.domain.User;
+import com.root.pilot.board.repository.PostRepository;
 import com.root.pilot.user.repository.UserRepository;
-import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 class PostServiceTest {
 
