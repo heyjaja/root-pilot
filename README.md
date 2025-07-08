@@ -30,3 +30,6 @@
 ## 구현 내용
 
 [https://drive.google.com/file/d/1-6Qgxr49ssxhFlJ-P6SmabOs-zzFn8TP/view?usp=share_link](https://drive.google.com/file/d/1-6Qgxr49ssxhFlJ-P6SmabOs-zzFn8TP/view?usp=share_link)
+
+## Comming soon v2
+2025.7.8 - 
