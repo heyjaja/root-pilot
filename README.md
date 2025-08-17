@@ -9,7 +9,7 @@
 - Springboot 2.7.4
 - Java 11
 - Gradle 7.4
-- MariaDB(docker) 10.9.3, MySQL8
+- MariaDB 10.9.3, MySQL8
 - JPA
 - Querydsl
 - Git(BitBucket)
@@ -31,5 +31,8 @@
 
 [https://drive.google.com/file/d/1-6Qgxr49ssxhFlJ-P6SmabOs-zzFn8TP/view?usp=share_link](https://drive.google.com/file/d/1-6Qgxr49ssxhFlJ-P6SmabOs-zzFn8TP/view?usp=share_link)
 
-## Comming soon v2
-2025.7.8 - 
+## v2
+2025.08 -
+
+## 소개
+창작물 공유 사이트
